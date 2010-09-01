@@ -1,7 +1,3 @@
-function _ (v) {
-	return v;
-}
-
 var wizard = jClass({
 
 	steps: [],
@@ -39,7 +35,8 @@ var wizard = jClass({
 		info.append('<hr/>');
 		if(data.information != '')
 		{
-			var infoText = $('<div/>').html(data.information);
+			var infoText = $('<div/>');
+			infoText.html(data.information);
 			infoText.append('<br /><br />');
 			info.append(infoText);
 		}
@@ -49,10 +46,10 @@ var wizard = jClass({
 		info.append('<br />');
 
 		var _self = this;
-		var label = 'Fortsett';
+		var label = _('Continue');
 		if(this.currStep >= (this.steps.length-1))
 		{
-			label = 'Fullf&oslash;r';
+			label = _('Finish');
 		}
 		var warningArea = $('<div/>').css({float:'left', 'font-weight':'bold'});
 		warningArea.hide();

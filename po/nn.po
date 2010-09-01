@@ -1,0 +1,186 @@
+# migraineDiary.
+# Copyright (C) 2010 Eskild Hustvedt
+# This file is distributed under the same license as the migraineDiary package.
+# Eskild Hustvedt <i18n@zerodogg.org>
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: migraineDiary\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-09-01 22:55+0200\n"
+"PO-Revision-Date: 2010-09-01 22:54+0200\n"
+"Last-Translator: Eskild Hustvedt <i18n@zerodogg.org>\n"
+"Language-Team: Norwegian Nynorsk\n"
+"Language: Norwegian Nynorsk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: migraineDiary.js:49
+msgid "Continue"
+msgstr "Fortsett"
+
+#: migraineDiary.js:52
+msgid "Finish"
+msgstr "Ferdig"
+
+#: migraineDiary.js:242
+msgid "Migraine intensity"
+msgstr "Migreneintensitet"
+
+#: migraineDiary.js:243
+msgid "How intense was the migraine?"
+msgstr "Kor intens var migrenen?"
+
+#: migraineDiary.js:248
+msgid "Light headache (able to function)"
+msgstr "Lett hodepine (g&aring; greitt &aring; fungere)"
+
+#: migraineDiary.js:252
+msgid "Moderate headache (able to function, but somewhat difficuilt)"
+msgstr "Moderat hodepine (fungerer, men det er vanskeleg)"
+
+#: migraineDiary.js:256
+msgid "Severe headache (unable to function)"
+msgstr "Kraftig hodepine (klarar ikkje &aring; fungere)"
+
+#: migraineDiary.js:264
+msgid "Started"
+msgstr "Startet"
+
+#: migraineDiary.js:266
+msgid "When did the migraine start?"
+msgstr "N&aring;r starta migrenen?"
+
+#: migraineDiary.js:272
+msgid "Medication"
+msgstr "Medisiner"
+
+#: migraineDiary.js:273
+msgid "Did you take any medication?"
+msgstr "Tok du nokon medisiner?"
+
+#: migraineDiary.js:278 migraineDiary.js:421
+msgid "Yes"
+msgstr "Ja"
+
+#: migraineDiary.js:282 migraineDiary.js:425
+msgid "No"
+msgstr "Nei"
+
+#: migraineDiary.js:297
+msgid "Medication (effect)"
+msgstr "Medisiner (effekt)"
+
+#: migraineDiary.js:298
+msgid "What effect did the medication have?"
+msgstr "Kva effekt hadde medisinene?"
+
+#: migraineDiary.js:303
+msgid "None"
+msgstr "Ingen"
+
+#: migraineDiary.js:307
+msgid "Some"
+msgstr "Nokon"
+
+#: migraineDiary.js:311
+msgid "Very good"
+msgstr "Veldig bra"
+
+#: migraineDiary.js:315
+msgid "Good, but regressed"
+msgstr "Bra, men hadde tilbakefall"
+
+#: migraineDiary.js:323
+msgid "Sleep"
+msgstr "S&oslash;vn"
+
+#: migraineDiary.js:324
+msgid "Approx. how long did you sleep last night?"
+msgstr "Ca. kor lenge sov du i n&aring;tt?"
+
+#: migraineDiary.js:329
+msgid "4 hours or less"
+msgstr "4 timer eller mindre"
+
+#: migraineDiary.js:333
+msgid "5 hours"
+msgstr "5 timer"
+
+#: migraineDiary.js:337
+msgid "6 hours"
+msgstr "6 timer"
+
+#: migraineDiary.js:341
+msgid "7 hours"
+msgstr "7 timer"
+
+#: migraineDiary.js:345
+msgid "8 hours"
+msgstr "8 timer"
+
+#: migraineDiary.js:349
+msgid "9 hours"
+msgstr "9 timer"
+
+#: migraineDiary.js:353
+msgid "10 hours"
+msgstr "10 timer"
+
+#: migraineDiary.js:357
+msgid "11 hours"
+msgstr "11 timer"
+
+#: migraineDiary.js:361
+msgid "12 hours or more"
+msgstr "12 timer eller meir"
+
+#: migraineDiary.js:369
+msgid "Drink"
+msgstr "Drikke"
+
+#: migraineDiary.js:370
+msgid "Approx. how much have you had to drink today?"
+msgstr "Ca. kor mykje har du drukket i dag?"
+
+#: migraineDiary.js:375
+msgid "Less than 1 litre"
+msgstr "Mindre enn 1 liter"
+
+#: migraineDiary.js:379
+msgid "1 litre"
+msgstr "1 liter"
+
+#: migraineDiary.js:383
+msgid "1.5 litre"
+msgstr "1.5 liter"
+
+#: migraineDiary.js:387
+msgid "2 litre"
+msgstr "2 liter"
+
+#: migraineDiary.js:391
+msgid "2.5 litre"
+msgstr "2.5 liter"
+
+#: migraineDiary.js:395
+msgid "3 litre or more"
+msgstr "3 liter eller meir"
+
+#: migraineDiary.js:415
+msgid "Menstral period"
+msgstr "Mensen"
+
+#: migraineDiary.js:416
+msgid "Did you have your menstral period?"
+msgstr "Hadde du mensen?"
+
+#: migraineDiary.js:429
+msgid "N/A (not female)"
+msgstr "N/A (er ikkje kvinne)"
+
+#: migraineDiary.js:471
+msgid "Done, data saved (locally)."
+msgstr "Ferdig, data lagra (lokalt)."

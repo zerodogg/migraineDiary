@@ -3,3 +3,4 @@
 *.1
 libs/jquery.json-2.2.min.js
 libs/jstorage.min.js
+po/*.json
