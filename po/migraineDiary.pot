@@ -1,0 +1,178 @@
+# migraineDiary.
+# Copyright (C) 2010 Eskild Hustvedt
+# This file is distributed under the same license as the migraineDiary package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: migraineDiary\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-09-01 21:57+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ./migraineDiary.js:245
+msgid "Migraine intensity"
+msgstr ""
+
+#: ./migraineDiary.js:246
+msgid "How intense was the migraine?"
+msgstr ""
+
+#: ./migraineDiary.js:251
+msgid "Light headache (able to function)"
+msgstr ""
+
+#: ./migraineDiary.js:255
+msgid "Moderate headache (able to function, but somewhat difficuilt)"
+msgstr ""
+
+#: ./migraineDiary.js:259
+msgid "Severe headache (unable to function)"
+msgstr ""
+
+#: ./migraineDiary.js:267
+msgid "Started"
+msgstr ""
+
+#: ./migraineDiary.js:269
+msgid "When did the migraine start?"
+msgstr ""
+
+#: ./migraineDiary.js:275
+msgid "Medication"
+msgstr ""
+
+#: ./migraineDiary.js:276
+msgid "Did you take any medication?"
+msgstr ""
+
+#: ./migraineDiary.js:281 ./migraineDiary.js:424
+msgid "Yes"
+msgstr ""
+
+#: ./migraineDiary.js:285 ./migraineDiary.js:428
+msgid "No"
+msgstr ""
+
+#: ./migraineDiary.js:300
+msgid "Medication (effect)"
+msgstr ""
+
+#: ./migraineDiary.js:301
+msgid "What effect did the medication have?"
+msgstr ""
+
+#: ./migraineDiary.js:306
+msgid "None"
+msgstr ""
+
+#: ./migraineDiary.js:310
+msgid "Some"
+msgstr ""
+
+#: ./migraineDiary.js:314
+msgid "Very good"
+msgstr ""
+
+#: ./migraineDiary.js:318
+msgid "Good, but regressed"
+msgstr ""
+
+#: ./migraineDiary.js:326
+msgid "Sleep"
+msgstr ""
+
+#: ./migraineDiary.js:327
+msgid "Approx. how long did you sleep last night?"
+msgstr ""
+
+#: ./migraineDiary.js:332
+msgid "4 hours or less"
+msgstr ""
+
+#: ./migraineDiary.js:336
+msgid "5 hours"
+msgstr ""
+
+#: ./migraineDiary.js:340
+msgid "6 hours"
+msgstr ""
+
+#: ./migraineDiary.js:344
+msgid "7 hours"
+msgstr ""
+
+#: ./migraineDiary.js:348
+msgid "8 hours"
+msgstr ""
+
+#: ./migraineDiary.js:352
+msgid "9 hours"
+msgstr ""
+
+#: ./migraineDiary.js:356
+msgid "10 hours"
+msgstr ""
+
+#: ./migraineDiary.js:360
+msgid "11 hours"
+msgstr ""
+
+#: ./migraineDiary.js:364
+msgid "12 hours or more"
+msgstr ""
+
+#: ./migraineDiary.js:372
+msgid "Drink"
+msgstr ""
+
+#: ./migraineDiary.js:373
+msgid "Approx. how much have you had to drink today?"
+msgstr ""
+
+#: ./migraineDiary.js:378
+msgid "Less than 1 litre"
+msgstr ""
+
+#: ./migraineDiary.js:382
+msgid "1 litre"
+msgstr ""
+
+#: ./migraineDiary.js:386
+msgid "1.5 litre"
+msgstr ""
+
+#: ./migraineDiary.js:390
+msgid "2 litre"
+msgstr ""
+
+#: ./migraineDiary.js:394
+msgid "2.5 litre"
+msgstr ""
+
+#: ./migraineDiary.js:398
+msgid "3 litre or more"
+msgstr ""
+
+#: ./migraineDiary.js:418
+msgid "Menstral period"
+msgstr ""
+
+#: ./migraineDiary.js:419
+msgid "Did you have your menstral period?"
+msgstr ""
+
+#: ./migraineDiary.js:432
+msgid "N/A (not female)"
+msgstr ""
+
+#: ./migraineDiary.js:474
+msgid "Done, data saved (locally)."
+msgstr ""
