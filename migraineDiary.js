@@ -252,7 +252,7 @@ var UI = jClass({
 					},
 					{
 						val:'2',
-						label: _('Moderate headache (able to function, but somewhat difficuilt')
+						label: _('Moderate headache (able to function, but somewhat difficuilt)')
 					},
 					{
 						val:'3',
