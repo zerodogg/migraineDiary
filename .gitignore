@@ -3,4 +3,5 @@
 *.1
 libs/jquery.json-2.2.min.js
 libs/jstorage.min.js
+libs/jquery-hotkeys.js
 po/*.json
