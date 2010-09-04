@@ -2,12 +2,10 @@ body
 {
 	background-color: #222;
 	color: #D3D7CF;
+	font-size: 11pt;
 }
-.ui-state-hover
+.ui-tabs
 {
-	border: 1px solid #000;
-}
-.ui-state-active
-{
-	background: #000;
+	border:0px;
+	background: none;
 }
