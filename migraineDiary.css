@@ -1,6 +1,6 @@
 body
 {
-	background-color: #222;
+	background-color: #111;
 	color: #D3D7CF;
 	font-size: 11pt;
 }
@@ -8,4 +8,36 @@ body
 {
 	border:0px;
 	background: none;
+}
+.ui-tabs-nav, .ui-state-default
+{
+	background-image: none !important;
+}
+hr
+{
+	height: 1px;
+	border: 0;
+	background-color: #D3D7CF;
+} 
+#wizardContinueButton
+{
+	float:right;
+}
+
+.wizardContainer
+{
+	width:600px;
+}
+
+/*
+ * Mobile browsers will be detected by js, and body will have the
+ * class mobile added to it
+ */
+.mobile #wizardContinueButton
+{
+	float:none;
+}
+.mobile .wizardContainer
+{
+	width:100% !important;
 }

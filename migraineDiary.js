@@ -15,6 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+jQuery.browser.isMobile = function ()
+{
+	return navigator.userAgent.match(/(Opera (Mi|Mo)|Android|Mobile)/);
+};
+
 var wizard = jClass({
 
 	steps: [],
@@ -40,9 +46,7 @@ var wizard = jClass({
 
 	prepContainer: function ()
 	{
-		this._container = $('<div/>').appendTo(this.parent).css({
-			width:600,
-		});
+		this._container = $('<div/>').appendTo(this.parent).addClass('wizardContainer');
 	},
 
 	newStep: function (data)
@@ -90,7 +94,7 @@ var wizard = jClass({
 			}
 			_self.nextStep();
 		});
-		button.css({float:'right'});
+		button.attr('id','wizardContinueButton');
 
 		info.append(button);
 		info.append('<div style="clear:both;" />');
@@ -250,6 +254,8 @@ var wizard = jClass({
 var UI = jClass({
 	_constructor: function (saveFunc)
 	{
+		if($.browser.isMobile())
+			$('body').addClass('mobile');
 		this.buildUI(saveFunc);
 	},
 
@@ -262,14 +268,7 @@ var UI = jClass({
 		tabDiv.append('<div id="addEntry"></div>');
 		tabDiv.append('<div id="viewEntries">View entries tab</div>');
 		$('body').append(tabDiv);
-		tabDiv.tabs({
-			select: function (event,ui)
-			{
-				console.log(event);
-				console.log(ui);
-				console.log('Hullo?');
-			}
-		});
+		tabDiv.tabs();
 
 		this.buildWizard(saveFunc,$('#addEntry'));
 	},
