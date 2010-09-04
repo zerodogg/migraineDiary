@@ -28,16 +28,19 @@ var wizard = jClass({
 
 	onDoneRun: null,
 
-	_constructor: function (steps,onDone)
+	parent: null,
+
+	_constructor: function (steps,onDone,parent)
 	{
 		this.steps = steps;
 		this.onDoneRun = onDone;
+		this.parent = parent;
 		this.prepContainer();
 	},
 
 	prepContainer: function ()
 	{
-		this._container = $('<div/>').appendTo('body').css({
+		this._container = $('<div/>').appendTo(this.parent).css({
 			width:600,
 		});
 	},
@@ -90,6 +93,7 @@ var wizard = jClass({
 		button.css({float:'right'});
 
 		info.append(button);
+		info.append('<div style="clear:both;" />');
 
 		return buildPart;
 	},
@@ -250,6 +254,27 @@ var UI = jClass({
 	},
 
 	buildUI: function (saveFunc)
+	{
+		var tabDiv = $('<div />');
+		var tabBar = $('<ul />').append('<li><a href="#addEntry">'+_('Add entry')+'</a></li>')
+								.append('<li><a href="#viewEntries">'+_('View entries')+'</a></li>');
+		tabDiv.append(tabBar);
+		tabDiv.append('<div id="addEntry"></div>');
+		tabDiv.append('<div id="viewEntries">View entries tab</div>');
+		$('body').append(tabDiv);
+		tabDiv.tabs({
+			select: function (event,ui)
+			{
+				console.log(event);
+				console.log(ui);
+				console.log('Hullo?');
+			}
+		});
+
+		this.buildWizard(saveFunc,$('#addEntry'));
+	},
+
+	buildWizard: function (saveFunc, parent)
 	{
 
 		var wizardDefinition =  [
@@ -456,7 +481,7 @@ var UI = jClass({
 				}
 			});
 		}
-		var myWizard = new wizard(wizardDefinition,saveFunc);
+		var myWizard = new wizard(wizardDefinition,saveFunc,parent);
 
 		myWizard.run();
 
