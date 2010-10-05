@@ -106,14 +106,18 @@ var wizard = jClass({
 	{
 		$.each(data.selections, function (int,setting)
 		{
+
+            var id = 'selectorStep_'+setting.val;
+            if(area.attr('id'))
+                id = id + '_'+area.attr('id');
 			var e = $('<input />');
 			e.attr('type','radio');
 			e.attr('name','radio');
 			e.attr('value',setting.val);
-			e.attr('id',setting.val);
+			e.attr('id',id);
 			area.append(e);
 			var label = $('<label />');
-			label.attr('for',setting.val);
+			label.attr('for',id);
 			label.html(setting.label);
 			area.append(label);
 			area.append('<br />');
@@ -134,11 +138,13 @@ var wizard = jClass({
 		area.append(data.prompt);
 		area.append('&nbsp;');
 
+        data = $.extend({ hour: 7, minute: 0}, data);
+
 		var h = $('<select name="hour" id="hour"/>');
 		for(var i = 0; i < 24; i++)
 		{
 			var opt = $('<option value="'+i+'" />');
-			if(i == 7)
+			if(i == data.hour)
 				opt.attr('selected','selected');
 			opt.html(i);
 			h.append(opt);
@@ -148,7 +154,7 @@ var wizard = jClass({
 		$.each(['00','15','30','45'],function (e,i)
 		{
 			var opt = $('<option value="'+i+'" />');
-			if(e == 0)
+			if(e == data.minute)
 				opt.attr('selected','selected');
 			opt.html(i);
 			m.append(opt);
@@ -188,14 +194,7 @@ var wizard = jClass({
 
 	runNamedStep: function (name)
 	{
-		var step;
-		$.each(this.steps, function(i,val)
-		{
-			if(val.setting == name)
-			{
-				step = i;
-			}
-		});
+        var step = this.getStepByName(name,true);
 		if(step != null)
 		{
 			this.runStep(step);
@@ -206,22 +205,30 @@ var wizard = jClass({
 		}
 	},
 
+    getStepByName: function (name, wantsInt)
+    {
+        var step;
+		$.each(this.steps, function(i,val)
+		{
+			if(val.setting == name)
+			{
+				step = i;
+			}
+		});
+
+        if(wantsInt)
+        {
+            return step;
+        }
+        else
+        {
+            return this.steps[step];
+        }
+    },
+
 	saveCurrent: function ()
 	{
-		var val = null;
-		if(this.currType == 'selector')
-		{
-			val = this._container.find('input:radio:checked').val();
-		}
-		else if(this.currType == 'text')
-		{
-			val = this._container.find('input').val();
-		}
-		else if(this.currType == 'time')
-		{
-			val = this._container.find('#hour').val()+':'+this._container.find('#minute').val();
-		}
-
+        var val = this.getStepValue(null,null);
 		if(val == '' || val == null)
 			return false;
 
@@ -229,6 +236,28 @@ var wizard = jClass({
 
 		return true;
 	},
+
+    getStepValue: function (type,search)
+    {
+        if (!type)
+            type = this.currType;
+        if (!search)
+            search = this._container;
+		var val = null;
+		if(type == 'selector')
+		{
+			val = search.find('input:radio:checked').val();
+		}
+		else if(type == 'text')
+		{
+			val = search.find('input').val();
+		}
+		else if(type == 'time')
+		{
+			val = search.find('#hour').val()+':'+search.find('#minute').val();
+		}
+        return val;
+    },
 
 	nextStep: function ()
 	{
@@ -251,7 +280,21 @@ var wizard = jClass({
 
 });
 
+var widgets = {
+    time: function (id)
+    {
+    },
+
+    pulldown: function (id, selections)
+    {
+    }
+};
+
 var UI = jClass({
+
+    wizardDefinition: null,
+    wizard: null,
+
 	_constructor: function (saveFunc)
 	{
 		if($.browser.isMobile())
@@ -259,8 +302,13 @@ var UI = jClass({
 		this.buildUI(saveFunc);
 	},
 
+    /*
+     * Wizard UI bits
+     */
+
 	buildUI: function (saveFunc)
 	{
+        var self = this;
 		var tabDiv = $('<div />');
 		var tabBar = $('<ul />').append('<li><a href="#addEntry">'+_('Add entry')+'</a></li>')
 								.append('<li><a href="#viewEntries">'+_('View entries')+'</a></li>');
@@ -268,14 +316,19 @@ var UI = jClass({
 		tabDiv.append('<div id="addEntry"></div>');
 		tabDiv.append('<div id="viewEntries">View entries tab</div>');
 		$('body').append(tabDiv);
-		tabDiv.tabs();
+        tabDiv.tabs({
+            show: function (event,UI)
+            {
+                if(UI.index == 1)
+                    self.buildViewTAB();
+            },
+        });
 
 		this.buildWizard(saveFunc,$('#addEntry'));
 	},
 
 	buildWizard: function (saveFunc, parent)
 	{
-
 		var wizardDefinition =  [
 			{
 				type: 'selector',
@@ -363,6 +416,7 @@ var UI = jClass({
 				setting: 'sleep',
 				title: _('Sleep'),
 				information: _('Approx. how long did you sleep last night?'),
+				changeInformation: _('Approx. how long did you sleep?'),
 				selections:
 				[
 					{
@@ -409,6 +463,7 @@ var UI = jClass({
 				setting: 'drink',
 				title: _('Drink'),
 				information: _('Approx. how much have you had to drink today?'),
+				changeInformation: _('Approx. how much have you had to drink?'),
 				selections:
 				[
 					{
@@ -480,11 +535,261 @@ var UI = jClass({
 				}
 			});
 		}
+        this.wizardDefinition = wizardDefinition;
 		var myWizard = new wizard(wizardDefinition,saveFunc,parent);
 
 		myWizard.run();
 
+        this.wizard = myWizard;
 	},
+
+    /*
+     * View/edit UI bits
+     */
+    buildViewTAB: function ()
+    {
+        var self = this;
+        var headOrder = [ 'savedAt','intensity','medication','medEffect','sleep','start' ];
+        var headMap = {
+            'savedAt': {
+                step: '',
+                type: 'date',
+                label: _('Date')
+            },
+            'intensity': {
+                step: 'intensity',
+                type: 'intensity',
+                label: _('Intensity')
+            },
+            'medication': {
+                step: 'medication',
+                type: 'bool',
+                label: _('Took medication?')
+            },
+            'medEffect': {
+                step: 'medEffect',
+                type: 'medEffect',
+                label: _('Med. effect')
+            },
+            'sleep': { 
+                step: 'sleep',
+                type: 'int',
+                label: _('Hours of sleep')
+            },
+            'start': {
+                step: 'start',
+                type: 'time',
+                label: _('Started at')
+            }
+        };
+
+        var tab = $('#viewEntries').empty();
+        var table = $('<table id="dataList"></table>').appendTo(tab);
+        var topRow = $('<tr></tr>').appendTo(table);
+        $.each(headOrder, function (i, val)
+        {
+            $('<th>'+headMap[val].label+'</th>').appendTo(topRow);
+        });
+        $('<th>&nbsp;</th>').appendTo(topRow);
+        $.each(diary.data.savedData, function (int,entry)
+        {
+            var row = $('<tr value="'+int+'"></tr>').appendTo(table);
+            $.each(headOrder, function (i, val)
+            {
+                var $td = $('<td />');
+                $td.attr('value',val);
+                $td.html(self.renderEntry(entry[val], headMap[val]));
+                $td.appendTo(row);
+            });
+            $('<td><span class="ui-icon ui-icon-trash"></span></td>').appendTo(row).click(function()
+            {
+                var $dialog = $('<div />').appendTo('body');
+                var close = function ()
+                {
+                    $dialog.dialog('close');
+                    $dialog.remove();
+                };
+                var buttons = {};
+                buttons[_('Yes')] = function ()
+                {
+                    close();
+                    diary.data.savedData.splice(int,1);
+                    diary.saveData();
+                    self.buildViewTAB();
+                };
+                buttons[_('No')] = close;
+                $dialog.html(_('Are you sure you want to <b>permanently</b> delete this entry?'));
+                $dialog.dialog({
+                    close: false,
+                    buttons: buttons
+                });
+            });
+        });
+        var columnClick = function ()
+        {
+            var me = $(this);
+            var val = me.text();
+            var input = $('<input type="text" />').val(val);
+            var blur = function ()
+            {
+                val = input.val();
+                me.html(val);
+                me.addClass('columnValue');
+                me.click(columnClick);
+            };
+            input.blur(blur);
+            input.submit(blur);
+            me.removeClass('columnValue');
+            me.unbind('click');
+            me.html(input);
+            input.keypress(function (event)
+            {
+                if (event.which == 13)
+                    input.trigger('blur');
+            });
+            input.focus();
+            input.select();
+        };
+        $('td').click(function ()
+        {
+            self.columnEditor(this, headMap);
+        });
+    },
+
+    columnEditor: function (column, map)
+    {
+        var self = this;
+        var $d = $('#columnDialog');
+        if ($d.length == 0)
+        {
+            $d = $('<div/>').attr('id','columnDialog').appendTo('body');
+        }
+        $d.empty();
+        var $col = $(column);
+        var type = $col.attr('value');
+        var info = map[type];
+        var data = this.wizard.getStepByName(info.step);
+        if(data.changeInformation)
+        {
+            $d.append(data.changeInformation+ '<br />');
+        }
+        else if(data.information)
+        {
+            $d.append(data.information + '<br />');
+        }
+        if(data.type == 'selector')
+        {
+            this.wizard.selectorStep($d,data);
+        }
+        else if(data.type == 'time')
+        {
+            this.wizard.timeSelectorStep($d,data);
+        }
+        else if(data.type == 'text')
+        {
+            this.wizard.textFieldStep($d,data);
+        }
+        else
+        {
+            throw('Unknown stepType: "'+info.stepType+'"');
+        }
+        var buttons = {};
+        buttons[_('Save change')] = function ()
+        {
+            var value = self.wizard.getStepValue(info.stepType,$d);
+            $d.dialog('close');
+            $d.empty();
+            if(value == '' || value == null)
+                return;
+            var entry = $col.parents('tr').attr('value');
+            diary.data.savedData[entry][type] = value;
+            $col.html(self.renderEntry(value,info));
+            diary.saveData();
+        };
+        $d.dialog({
+            minWidth: 400,
+            buttons: buttons
+        });
+    },
+
+    renderEntry: function(entry,data)
+    {
+        var type = data.type;
+        if(entry == null || entry == '')
+            return '&nbsp';
+        var self = this;
+        if(type == 'bool')
+        {
+            if(entry == true || entry == 'true')
+                return 'Yes';
+            else
+                return 'No';
+        }
+        else if (type == 'time' || type == 'date')
+        {
+            entry = parseInt(entry);
+            if(entry > 1254329048)
+            {
+                try
+                {
+                    var dt = new Date(entry*1000);
+                    var year = [ dt.getFullYear(), self.timePad(dt.getMonth()), self.timePad(dt.getDate()) ];
+                    var time = [ self.timePad(dt.getHours()), self.timePad(dt.getMinutes()) ];
+                    var val = year.join('-'); // + ' ' + time.join(':');
+                    return val;
+                }
+                catch(e)
+                {
+                    console.log(e);
+                    return '(failed to parse date "'+entry+'")';
+                }
+            }
+            else
+            {
+                return entry;
+            }
+        }
+        else if(type == 'int')
+        {
+            if(data.postfix)
+                entry = entry+' '+data.postfix;
+            return entry;
+        }
+        else if(type == 'intensity')
+        {
+            var intenseMap = [];
+            intenseMap[1] = _('Light');
+            intenseMap[2] = _('Moderate');
+            intenseMap[3] = _('Severe');
+            if(intenseMap[entry])
+                return intenseMap[entry];
+            return '(unknown/unparseable)';
+        }
+        else if(type == 'medEffect')
+        {
+            var effectMap = {
+                none: _('None'),
+                some: _('Some'),
+                good: _('Very good'),
+                regressed: _('Good, but regressed')
+            };
+            if(type == null)
+                return '-';
+            if(effectMap[entry])
+                return effectMap[entry];
+            return '(unknown/unparseable)';
+        }
+        console.log('Unknown type: '+type);
+        return entry;
+    },
+
+    timePad: function (val)
+    {
+        val = new String(val);
+        if(val.length == 1)
+            return '0'+val;
+        return val;
+    }
 });
 
 var migraineDiary = jClass({
@@ -509,7 +814,7 @@ var migraineDiary = jClass({
 		{
 			self.appendData(wizard.data);
 			self.saveData();
-			$('body').html(_('Done, data saved (locally).'));
+			$('#addEntry').html(_('Done, data saved (locally).'));
 		});
 	},
 
