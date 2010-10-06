@@ -29,6 +29,28 @@ hr
 {
 	width:600px;
 }
+#datePromptEntity .ui-widget-content
+{
+	border: 0px;
+}
+
+#viewEntries table
+{
+	background-color: #444;
+	padding: 1em;
+	border-radius: 1em;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+}
+#viewEntries th
+{
+	padding-right: 5px;
+}
+
+#viewEntries tr:hover
+{
+	background-color: #111;
+}
 
 /*
  * Mobile browsers will be detected by js, and body will have the
@@ -41,22 +63,4 @@ hr
 .mobile .wizardContainer
 {
 	width:100% !important;
-}
-
-table
-{
-	background-color: #444;
-	padding: 1em;
-	border-radius: 1em;
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
-}
-th
-{
-	padding-right: 5px;
-}
-
-tr:hover
-{
-	background-color: #111;
 }

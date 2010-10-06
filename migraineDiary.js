@@ -37,6 +37,10 @@ var UIPrompts = jClass({
 		{
 			val = search.find('#hour').val()+':'+search.find('#minute').val();
 		}
+        else if(type == 'date')
+        {
+            val = $('#datePromptEntity').datepicker('getDate');
+        }
         else
         {
             console.log('getPromptValue() got invalid type='+type);
@@ -75,6 +79,24 @@ var UIPrompts = jClass({
 		area.append(e);
 	},
 
+    datePrompt: function (area,data)
+    {
+		area.append(data.prompt);
+		area.append('&nbsp;');
+        $('<div />').attr('id','datePromptEntity').appendTo(area);
+        $('#datePromptEntity').datepicker({
+            // UI uses the international date format, but this isn't displayed,
+            // and this will get us a parseable date.
+            dateFormat: 'mm-dd-yyyy',
+            dayNames: [_('Sunday'),_('Monday'),_('Tuesday'),_('Wednesday'),_('Thursday'),_('Friday'),_('Saturday')],
+            dayNamesMin: [_('Su'),_('Mo'),_('Tu'),_('We'),_('Th'),_('Fr'),_('Sa')]
+        });
+        if(data.defaultDate)
+        {
+            $('#datePromptEntity').datepicker('setDate',data.defaultDate);
+        }
+    },
+
 	timePrompt: function (area,data)
 	{
 		area.append(data.prompt);
@@ -102,7 +124,7 @@ var UIPrompts = jClass({
 			m.append(opt);
 		});
 		area.append(m);
-	},
+	}
 });
 
 var wizard = jClass.extend(UIPrompts,{
@@ -568,7 +590,13 @@ var UI = jClass({
             'savedAt': {
                 step: '',
                 type: 'date',
-                label: _('Date')
+                label: _('Date'),
+                minHeight: 380,
+                minWidth: 330,
+                stepData: {
+                    information: _('Select the date for this entry'),
+                    type: 'date'
+                }
             },
             'intensity': {
                 step: 'intensity',
@@ -682,7 +710,13 @@ var UI = jClass({
         var $col = $(column);
         var type = $col.attr('value');
         var info = map[type];
-        var data = this.wizard.getStepByName(info.step);
+        var data;
+
+        if(info.stepData)
+            data = info.stepData;
+        else
+            data = this.wizard.getStepByName(info.step);
+
         if(data.changeInformation)
         {
             $d.append(data.changeInformation+ '<br />');
@@ -703,6 +737,10 @@ var UI = jClass({
         {
             this.prompts.textPrompt($d,data);
         }
+        else if(data.type == 'date')
+        {
+            this.prompts.datePrompt($d,data);
+        }
         else
         {
             throw('Unknown step type: "'+data.type+'"');
@@ -713,6 +751,11 @@ var UI = jClass({
             var value = self.prompts.getPromptValue(data.type,$d);
             $d.dialog('close');
             $d.empty();
+            if(data.type == 'date')
+            {
+                value = new Date(value);
+                value = Math.round(value.getTime()/1000);
+            }
             if(value == '' || value == null)
                 return;
             var entry = $col.parents('tr').attr('value');
@@ -720,10 +763,15 @@ var UI = jClass({
             $col.html(self.renderEntry(value,info));
             diary.saveData();
         };
-        $d.dialog({
+        var dialogSettings = {
             minWidth: 400,
             buttons: buttons
-        });
+        };
+        if (info.minHeight)
+            dialogSettings['minHeight'] = info.minHeight;
+        if(info.minWidth)
+            dialogSettings['minWidth'] = info.minWidth;
+        $d.dialog(dialogSettings);
     },
 
     renderEntry: function(entry,data)
@@ -747,7 +795,7 @@ var UI = jClass({
                 try
                 {
                     var dt = new Date(entry*1000);
-                    var year = [ dt.getFullYear(), self.timePad(dt.getMonth()), self.timePad(dt.getDate()) ];
+                    var year = [ dt.getFullYear(), self.timePad(dt.getMonth()+1), self.timePad(dt.getDate()) ];
                     var time = [ self.timePad(dt.getHours()), self.timePad(dt.getMinutes()) ];
                     var val = year.join('-'); // + ' ' + time.join(':');
                     return val;
