@@ -21,7 +21,91 @@ jQuery.browser.isMobile = function ()
 	return navigator.userAgent.match(/(Opera (Mi|Mo)|Android|Mobile)/);
 };
 
-var wizard = jClass({
+var UIPrompts = jClass({
+    getPromptValue: function (type,search)
+    {
+		var val = null;
+		if(type == 'selector')
+		{
+			val = search.find('input:radio:checked').val();
+		}
+		else if(type == 'text')
+		{
+			val = search.find('input').val();
+		}
+		else if(type == 'time')
+		{
+			val = search.find('#hour').val()+':'+search.find('#minute').val();
+		}
+        else
+        {
+            console.log('getPromptValue() got invalid type='+type);
+        }
+        return val;
+    },
+
+	selectorPrompt: function (area,data)
+	{
+		$.each(data.selections, function (int,setting)
+		{
+
+            var id = 'selectorPrompt_'+setting.val;
+            if(area.attr('id'))
+                id = id + '_'+area.attr('id');
+			var e = $('<input />');
+			e.attr('type','radio');
+			e.attr('name','radio');
+			e.attr('value',setting.val);
+			e.attr('id',id);
+			area.append(e);
+			var label = $('<label />');
+			label.attr('for',id);
+			label.html(setting.label);
+			area.append(label);
+			area.append('<br />');
+		});
+	},
+
+	textPrompt: function (area,data)
+	{
+		var e = $('<input type="text" />');
+		e.css({maxWidth:'100%', minWidth: '50%'});
+		area.append(data.prompt);
+		area.append('&nbsp;');
+		area.append(e);
+	},
+
+	timePrompt: function (area,data)
+	{
+		area.append(data.prompt);
+		area.append('&nbsp;');
+
+        data = $.extend({ hour: 7, minute: 0}, data);
+
+		var h = $('<select name="hour" id="hour"/>');
+		for(var i = 0; i < 24; i++)
+		{
+			var opt = $('<option value="'+i+'" />');
+			if(i == data.hour)
+				opt.attr('selected','selected');
+			opt.html(i);
+			h.append(opt);
+		}
+		area.append(h);
+		var m = $('<select name="minute" id="minute" />');
+		$.each(['00','15','30','45'],function (e,i)
+		{
+			var opt = $('<option value="'+i+'" />');
+			if(e == data.minute)
+				opt.attr('selected','selected');
+			opt.html(i);
+			m.append(opt);
+		});
+		area.append(m);
+	},
+});
+
+var wizard = jClass.extend(UIPrompts,{
 
 	steps: [],
 
@@ -102,66 +186,6 @@ var wizard = jClass({
 		return buildPart;
 	},
 
-	selectorStep: function (area,data)
-	{
-		$.each(data.selections, function (int,setting)
-		{
-
-            var id = 'selectorStep_'+setting.val;
-            if(area.attr('id'))
-                id = id + '_'+area.attr('id');
-			var e = $('<input />');
-			e.attr('type','radio');
-			e.attr('name','radio');
-			e.attr('value',setting.val);
-			e.attr('id',id);
-			area.append(e);
-			var label = $('<label />');
-			label.attr('for',id);
-			label.html(setting.label);
-			area.append(label);
-			area.append('<br />');
-		});
-	},
-
-	textFieldStep: function (area,data)
-	{
-		var e = $('<input type="text" />');
-		e.css({maxWidth:'100%', minWidth: '50%'});
-		area.append(data.prompt);
-		area.append('&nbsp;');
-		area.append(e);
-	},
-
-	timeSelectorStep: function (area,data)
-	{
-		area.append(data.prompt);
-		area.append('&nbsp;');
-
-        data = $.extend({ hour: 7, minute: 0}, data);
-
-		var h = $('<select name="hour" id="hour"/>');
-		for(var i = 0; i < 24; i++)
-		{
-			var opt = $('<option value="'+i+'" />');
-			if(i == data.hour)
-				opt.attr('selected','selected');
-			opt.html(i);
-			h.append(opt);
-		}
-		area.append(h);
-		var m = $('<select name="minute" id="minute" />');
-		$.each(['00','15','30','45'],function (e,i)
-		{
-			var opt = $('<option value="'+i+'" />');
-			if(e == data.minute)
-				opt.attr('selected','selected');
-			opt.html(i);
-			m.append(opt);
-		});
-		area.append(m);
-	},
-
 	run: function ()
 	{
 		this.runStep(0);
@@ -180,15 +204,15 @@ var wizard = jClass({
 
 		if(d.type == 'selector')
 		{
-			this.selectorStep(area,d);
+			this.selectorPrompt(area,d);
 		}
 		else if(d.type == 'text')
 		{
-			this.textFieldStep(area,d);
+			this.textPrompt(area,d);
 		}
 		else if(d.type == 'time')
 		{
-			this.timeSelectorStep(area,d);
+			this.timePrompt(area,d);
 		}
 	},
 
@@ -237,26 +261,11 @@ var wizard = jClass({
 		return true;
 	},
 
-    getStepValue: function (type,search)
+    getStepValue: function ()
     {
-        if (!type)
-            type = this.currType;
-        if (!search)
+        var type = this.currType,
             search = this._container;
-		var val = null;
-		if(type == 'selector')
-		{
-			val = search.find('input:radio:checked').val();
-		}
-		else if(type == 'text')
-		{
-			val = search.find('input').val();
-		}
-		else if(type == 'time')
-		{
-			val = search.find('#hour').val()+':'+search.find('#minute').val();
-		}
-        return val;
+        return this.getPromptValue(type,search);
     },
 
 	nextStep: function ()
@@ -294,6 +303,7 @@ var UI = jClass({
 
     wizardDefinition: null,
     wizard: null,
+    prompts: null,
 
 	_constructor: function (saveFunc)
 	{
@@ -540,7 +550,11 @@ var UI = jClass({
 
 		myWizard.run();
 
-        this.wizard = myWizard;
+        // We set this.prompts to the wizard as well, as the wizard
+        // extends UIPrompts, and thus it makes little sense to instantiate
+        // a second one, merely for the sake of using methods already available
+        // via .wizard
+        this.prompts = this.wizard = myWizard;
 	},
 
     /*
@@ -679,24 +693,24 @@ var UI = jClass({
         }
         if(data.type == 'selector')
         {
-            this.wizard.selectorStep($d,data);
+            this.prompts.selectorPrompt($d,data);
         }
         else if(data.type == 'time')
         {
-            this.wizard.timeSelectorStep($d,data);
+            this.prompts.timePrompt($d,data);
         }
         else if(data.type == 'text')
         {
-            this.wizard.textFieldStep($d,data);
+            this.prompts.textPrompt($d,data);
         }
         else
         {
-            throw('Unknown stepType: "'+info.stepType+'"');
+            throw('Unknown step type: "'+data.type+'"');
         }
         var buttons = {};
         buttons[_('Save change')] = function ()
         {
-            var value = self.wizard.getStepValue(info.stepType,$d);
+            var value = self.prompts.getPromptValue(data.type,$d);
             $d.dialog('close');
             $d.empty();
             if(value == '' || value == null)
