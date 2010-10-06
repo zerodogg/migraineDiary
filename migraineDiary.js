@@ -721,9 +721,9 @@ var UI = jClass({
         if(type == 'bool')
         {
             if(entry == true || entry == 'true')
-                return 'Yes';
+                return _('Yes');
             else
-                return 'No';
+                return _('No');
         }
         else if (type == 'time' || type == 'date')
         {
