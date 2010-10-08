@@ -43,6 +43,14 @@ hr
 	-moz-border-radius: 10px;
 	font-size: 0.8em;
 }
+#viewEntries td
+{
+	padding-left: 0.5em;
+}
+#viewEntries .nopad
+{
+	padding-left: 0em;
+}
 #viewEntries th
 {
 	padding-right: 5px;

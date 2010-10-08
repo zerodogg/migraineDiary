@@ -670,7 +670,7 @@ var UI = jClass({
                 $td.html(self.renderEntry(entry[val], headMap[val]));
                 $td.appendTo(row);
             });
-            $('<td><span class="ui-icon ui-icon-trash"></span></td>').appendTo(row).click(function()
+            $('<td class="nopad"><span class="ui-icon ui-icon-trash"></span></td>').appendTo(row).click(function()
             {
                 var $dialog = $('<div />').appendTo('body');
                 var close = function ()
@@ -797,6 +797,7 @@ var UI = jClass({
         };
         var dialogSettings = {
             minWidth: 400,
+            minHeight: null,
             buttons: buttons
         };
         if (info.minHeight)
@@ -941,6 +942,7 @@ var diary;
 
 $(function ()
 {
+    $('title').text(_('Migraine Diary'));
 	diary = new migraineDiary();
 	diary.runUI();
 });
