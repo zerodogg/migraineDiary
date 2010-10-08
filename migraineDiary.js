@@ -585,7 +585,9 @@ var UI = jClass({
     buildViewTAB: function ()
     {
         var self = this;
-        var headOrder = [ 'savedAt','intensity','medication','medEffect','sleep','start' ];
+        var headOrder = [ 'savedAt','start','intensity','medication','medEffect','sleep' ];
+        if(diary.data.sex != 'male')
+            headOrder.push('mens');
         var headMap = {
             'savedAt': {
                 step: '',
@@ -606,12 +608,32 @@ var UI = jClass({
             'medication': {
                 step: 'medication',
                 type: 'bool',
-                label: _('Took medication?')
+                label: _('Took medication?'),
+                postRun: function($col,value,entry)
+                {
+                    if(value == 'true')
+                    {
+                        $col.parents('tr').find('[value=medEffect]').click();
+                    }
+                    else
+                    {
+                        diary.data.savedData[entry]['medEffect'] = null;
+                        $col.parents('tr').find('[value=medEffect]').html('-');
+                    }
+                }
             },
             'medEffect': {
                 step: 'medEffect',
                 type: 'medEffect',
-                label: _('Med. effect')
+                label: _('Med. effect'),
+                preCheck: function ($col)
+                {
+                    var ent = $col.parents('tr').attr('value');
+                    var med = diary.data.savedData[ent]['medication'];
+                    if(med == 'true' || med == true)
+                        return true;
+                    return false;
+                }
             },
             'sleep': { 
                 step: 'sleep',
@@ -620,8 +642,13 @@ var UI = jClass({
             },
             'start': {
                 step: 'start',
-                type: 'time',
+                type: 'raw',
                 label: _('Started at')
+            },
+            'mens': {
+                step: 'mens',
+                type: 'bool',
+                label: _('Menstral period')
             }
         };
 
@@ -712,6 +739,9 @@ var UI = jClass({
         var info = map[type];
         var data;
 
+        if(info.preCheck && !info.preCheck($col))
+            return;
+
         if(info.stepData)
             data = info.stepData;
         else
@@ -762,6 +792,8 @@ var UI = jClass({
             diary.data.savedData[entry][type] = value;
             $col.html(self.renderEntry(value,info));
             diary.saveData();
+            if (info.postRun)
+                info.postRun($col,value,entry);
         };
         var dialogSettings = {
             minWidth: 400,
@@ -777,8 +809,6 @@ var UI = jClass({
     renderEntry: function(entry,data)
     {
         var type = data.type;
-        if(entry == null || entry == '')
-            return '&nbsp';
         var self = this;
         if(type == 'bool')
         {
@@ -835,11 +865,15 @@ var UI = jClass({
                 good: _('Very good'),
                 regressed: _('Good, but regressed')
             };
-            if(type == null)
+            if(entry == null || entry == '')
                 return '-';
             if(effectMap[entry])
                 return effectMap[entry];
             return '(unknown/unparseable)';
+        }
+        else if(type == 'raw')
+        {
+            return entry;
         }
         console.log('Unknown type: '+type);
         return entry;
