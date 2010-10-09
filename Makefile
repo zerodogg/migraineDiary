@@ -13,3 +13,5 @@ updatepo:
 	for po in po/*.po; do msgmerge -U "$$po" "po/migraineDiary.pot"; $(simpleJSi18nPath)/po2json "$$po" "$$po.json";done
 	$(simpleJSi18nPath)/buildBundle ./i18n.js ./po/*.json
 	rm -f po/*.json
+postat:
+	@for f in po/*.po; do  echo "$$f:"; msgfmt --stat -o /dev/null "$$f";done
