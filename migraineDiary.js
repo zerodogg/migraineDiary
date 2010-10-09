@@ -678,7 +678,7 @@ var UI = jClass({
                 $td.html(self.renderEntry(entry[val], headMap[val]));
                 $td.appendTo(row);
             });
-            $('<td class="nopad"><span class="ui-icon ui-icon-trash"></span></td>').appendTo(row).click(function()
+            $('<td value="delete" class="nopad"><span class="ui-icon ui-icon-trash"></span></td>').appendTo(row).click(function()
             {
                 var $dialog = $('<div />').appendTo('body');
                 var close = function ()
@@ -746,6 +746,11 @@ var UI = jClass({
         var type = $col.attr('value');
         var info = map[type];
         var data;
+
+        // If type is 'delete' then it's the deletion column, which is
+        // handled elsewhere
+        if(type == 'delete')
+            return;
 
         if(info.preCheck && !info.preCheck($col))
             return;
