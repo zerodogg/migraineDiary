@@ -283,7 +283,7 @@ var wizard = jClass.extend(UIPrompts,{
 	saveCurrent: function ()
 	{
         var val = this.getStepValue(null,null);
-		if(val == '' || val == null)
+		if(val === '' || val === null)
 			return false;
 
 		this.data[this.currDataKey] = val;
