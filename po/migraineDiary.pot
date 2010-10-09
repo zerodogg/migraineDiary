@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: migraineDiary\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-08 23:32+0200\n"
+"POT-Creation-Date: 2010-10-09 12:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,296 +17,318 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ./migraineDiary.js:91
+#: ./migraineDiary.js:99
 msgid "Sunday"
 msgstr ""
 
-#: ./migraineDiary.js:91
+#: ./migraineDiary.js:99
 msgid "Monday"
 msgstr ""
 
-#: ./migraineDiary.js:91
+#: ./migraineDiary.js:99
 msgid "Tuesday"
 msgstr ""
 
-#: ./migraineDiary.js:91
+#: ./migraineDiary.js:99
 msgid "Wednesday"
 msgstr ""
 
-#: ./migraineDiary.js:91
+#: ./migraineDiary.js:99
 msgid "Thursday"
 msgstr ""
 
-#: ./migraineDiary.js:91
+#: ./migraineDiary.js:99
 msgid "Friday"
 msgstr ""
 
-#: ./migraineDiary.js:91
+#: ./migraineDiary.js:99
 msgid "Saturday"
 msgstr ""
 
-#: ./migraineDiary.js:92
+#: ./migraineDiary.js:100
 msgid "Su"
 msgstr ""
 
-#: ./migraineDiary.js:92
+#: ./migraineDiary.js:100
 msgid "Mo"
 msgstr ""
 
-#: ./migraineDiary.js:92
+#: ./migraineDiary.js:100
 msgid "Tu"
 msgstr ""
 
-#: ./migraineDiary.js:92
+#: ./migraineDiary.js:100
 msgid "We"
 msgstr ""
 
-#: ./migraineDiary.js:92
+#: ./migraineDiary.js:100
 msgid "Th"
 msgstr ""
 
-#: ./migraineDiary.js:92
+#: ./migraineDiary.js:100
 msgid "Fr"
 msgstr ""
 
-#: ./migraineDiary.js:92
+#: ./migraineDiary.js:100
 msgid "Sa"
 msgstr ""
 
-#: ./migraineDiary.js:179
+#: ./migraineDiary.js:187
 msgid "Continue"
 msgstr ""
 
-#: ./migraineDiary.js:182
+#: ./migraineDiary.js:190
 msgid "Finish"
 msgstr ""
 
-#: ./migraineDiary.js:345
+#: ./migraineDiary.js:353
 msgid "Add entry"
 msgstr ""
 
-#: ./migraineDiary.js:346
+#: ./migraineDiary.js:354
 msgid "View entries"
 msgstr ""
 
-#: ./migraineDiary.js:368
+#: ./migraineDiary.js:376
 msgid "Migraine intensity"
 msgstr ""
 
-#: ./migraineDiary.js:369
+#: ./migraineDiary.js:377
 msgid "How intense was the migraine?"
 msgstr ""
 
-#: ./migraineDiary.js:374
+#: ./migraineDiary.js:382
 msgid "Light headache (able to function)"
 msgstr ""
 
-#: ./migraineDiary.js:378
+#: ./migraineDiary.js:386
 msgid "Moderate headache (able to function, but somewhat difficuilt)"
 msgstr ""
 
-#: ./migraineDiary.js:382
+#: ./migraineDiary.js:390
 msgid "Severe headache (unable to function)"
 msgstr ""
 
-#: ./migraineDiary.js:390
+#: ./migraineDiary.js:398
 msgid "Started"
 msgstr ""
 
-#: ./migraineDiary.js:392
+#: ./migraineDiary.js:400
 msgid "When did the migraine start?"
 msgstr ""
 
-#: ./migraineDiary.js:398
+#: ./migraineDiary.js:406
 msgid "Medication"
 msgstr ""
 
-#: ./migraineDiary.js:399
+#: ./migraineDiary.js:407
 msgid "Did you take any medication?"
 msgstr ""
 
-#: ./migraineDiary.js:404 ./migraineDiary.js:549 ./migraineDiary.js:682
-#: ./migraineDiary.js:817
+#: ./migraineDiary.js:412 ./migraineDiary.js:557 ./migraineDiary.js:690
+#: ./migraineDiary.js:825
 msgid "Yes"
 msgstr ""
 
-#: ./migraineDiary.js:408 ./migraineDiary.js:553 ./migraineDiary.js:689
-#: ./migraineDiary.js:819
+#: ./migraineDiary.js:416 ./migraineDiary.js:561 ./migraineDiary.js:697
+#: ./migraineDiary.js:827
 msgid "No"
 msgstr ""
 
-#: ./migraineDiary.js:423
+#: ./migraineDiary.js:431
 msgid "Medication (effect)"
 msgstr ""
 
-#: ./migraineDiary.js:424
+#: ./migraineDiary.js:432
 msgid "What effect did the medication have?"
 msgstr ""
 
-#: ./migraineDiary.js:429 ./migraineDiary.js:864
+#: ./migraineDiary.js:437 ./migraineDiary.js:872
 msgid "None"
 msgstr ""
 
-#: ./migraineDiary.js:433 ./migraineDiary.js:865
+#: ./migraineDiary.js:441 ./migraineDiary.js:873
 msgid "Some"
 msgstr ""
 
-#: ./migraineDiary.js:437 ./migraineDiary.js:866
+#: ./migraineDiary.js:445 ./migraineDiary.js:874
 msgid "Very good"
 msgstr ""
 
-#: ./migraineDiary.js:441 ./migraineDiary.js:867
+#: ./migraineDiary.js:449 ./migraineDiary.js:875
 msgid "Good, but regressed"
 msgstr ""
 
-#: ./migraineDiary.js:449
+#: ./migraineDiary.js:457
 msgid "Sleep"
 msgstr ""
 
-#: ./migraineDiary.js:450
+#: ./migraineDiary.js:458
 msgid "Approx. how long did you sleep last night?"
 msgstr ""
 
-#: ./migraineDiary.js:451
+#: ./migraineDiary.js:459
 msgid "Approx. how long did you sleep?"
 msgstr ""
 
-#: ./migraineDiary.js:456
+#: ./migraineDiary.js:464
 msgid "4 hours or less"
 msgstr ""
 
-#: ./migraineDiary.js:460
+#: ./migraineDiary.js:468
 msgid "5 hours"
 msgstr ""
 
-#: ./migraineDiary.js:464
+#: ./migraineDiary.js:472
 msgid "6 hours"
 msgstr ""
 
-#: ./migraineDiary.js:468
+#: ./migraineDiary.js:476
 msgid "7 hours"
 msgstr ""
 
-#: ./migraineDiary.js:472
+#: ./migraineDiary.js:480
 msgid "8 hours"
 msgstr ""
 
-#: ./migraineDiary.js:476
+#: ./migraineDiary.js:484
 msgid "9 hours"
 msgstr ""
 
-#: ./migraineDiary.js:480
+#: ./migraineDiary.js:488
 msgid "10 hours"
 msgstr ""
 
-#: ./migraineDiary.js:484
+#: ./migraineDiary.js:492
 msgid "11 hours"
 msgstr ""
 
-#: ./migraineDiary.js:488
+#: ./migraineDiary.js:496
 msgid "12 hours or more"
 msgstr ""
 
-#: ./migraineDiary.js:496
+#: ./migraineDiary.js:504
 msgid "Drink"
 msgstr ""
 
-#: ./migraineDiary.js:497
+#: ./migraineDiary.js:505
 msgid "Approx. how much have you had to drink today?"
 msgstr ""
 
-#: ./migraineDiary.js:498
+#: ./migraineDiary.js:506
 msgid "Approx. how much have you had to drink?"
 msgstr ""
 
-#: ./migraineDiary.js:503
+#: ./migraineDiary.js:511
 msgid "Less than 1 litre"
 msgstr ""
 
-#: ./migraineDiary.js:507
+#: ./migraineDiary.js:515
 msgid "1 litre"
 msgstr ""
 
-#: ./migraineDiary.js:511
+#: ./migraineDiary.js:519
 msgid "1.5 litre"
 msgstr ""
 
-#: ./migraineDiary.js:515
+#: ./migraineDiary.js:523
 msgid "2 litre"
 msgstr ""
 
-#: ./migraineDiary.js:519
+#: ./migraineDiary.js:527
 msgid "2.5 litre"
 msgstr ""
 
-#: ./migraineDiary.js:523
+#: ./migraineDiary.js:531
 msgid "3 litre or more"
 msgstr ""
 
-#: ./migraineDiary.js:543 ./migraineDiary.js:651
+#: ./migraineDiary.js:551 ./migraineDiary.js:659
 msgid "Menstral period"
 msgstr ""
 
-#: ./migraineDiary.js:544
+#: ./migraineDiary.js:552
 msgid "Did you have your menstral period?"
 msgstr ""
 
-#: ./migraineDiary.js:557
+#: ./migraineDiary.js:565
 msgid "N/A (not female)"
 msgstr ""
 
-#: ./migraineDiary.js:595
+#: ./migraineDiary.js:603
 msgid "Date"
 msgstr ""
 
-#: ./migraineDiary.js:599
+#: ./migraineDiary.js:607
 msgid "Select the date for this entry"
 msgstr ""
 
-#: ./migraineDiary.js:606
+#: ./migraineDiary.js:614
 msgid "Intensity"
 msgstr ""
 
-#: ./migraineDiary.js:611
+#: ./migraineDiary.js:619
 msgid "Took medication?"
 msgstr ""
 
-#: ./migraineDiary.js:628
+#: ./migraineDiary.js:636
 msgid "Med. effect"
 msgstr ""
 
-#: ./migraineDiary.js:641
+#: ./migraineDiary.js:649
 msgid "Hours of sleep"
 msgstr ""
 
-#: ./migraineDiary.js:646
+#: ./migraineDiary.js:654
 msgid "Started at"
 msgstr ""
 
-#: ./migraineDiary.js:690
+#: ./migraineDiary.js:698
 msgid "Are you sure you want to <b>permanently</b> delete this entry?"
 msgstr ""
 
-#: ./migraineDiary.js:779
+#: ./migraineDiary.js:787
 msgid "Save change"
 msgstr ""
 
-#: ./migraineDiary.js:854
+#: ./migraineDiary.js:862
 msgid "Light"
 msgstr ""
 
-#: ./migraineDiary.js:855
+#: ./migraineDiary.js:863
 msgid "Moderate"
 msgstr ""
 
-#: ./migraineDiary.js:856
+#: ./migraineDiary.js:864
 msgid "Severe"
 msgstr ""
 
-#: ./migraineDiary.js:914
-msgid "Done, data saved (locally)."
+#: ./migraineDiary.js:901
+msgid "Ok"
 msgstr ""
 
-#: ./migraineDiary.js:945
+#: ./migraineDiary.js:928
+msgid "Done, data saved (locally in your browser)."
+msgstr ""
+
+#: ./migraineDiary.js:928
+msgid "Learn more about storage"
+msgstr ""
+
+#: ./migraineDiary.js:932
+msgid ""
+"All data saved by the Migraine Diary is saved locally in your browser. No "
+"data is sent to the server. This storage is permanent accross browser "
+"sessions, but if you explicitly delete \"local storage\" data from your "
+"browser, it will be permanently lost."
+msgstr ""
+
+#: ./migraineDiary.js:967
+msgid ""
+"A fatal error occurred while saving the data. Your data has probably not "
+"been saved."
+msgstr ""
+
+#: ./migraineDiary.js:976
 msgid "Migraine Diary"
 msgstr ""
