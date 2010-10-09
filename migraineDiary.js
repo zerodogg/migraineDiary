@@ -28,6 +28,14 @@ var UIPrompts = jClass({
 		if(type == 'selector')
 		{
 			val = search.find('input:radio:checked').val();
+            if(val == 'true')
+            {
+                val = true;
+            }
+            else if(val == 'false')
+            {
+                val = false;
+            }
 		}
 		else if(type == 'text')
 		{
@@ -611,7 +619,7 @@ var UI = jClass({
                 label: _('Took medication?'),
                 postRun: function($col,value,entry)
                 {
-                    if(value == 'true')
+                    if(value == true)
                     {
                         $col.parents('tr').find('[value=medEffect]').click();
                     }
@@ -630,7 +638,7 @@ var UI = jClass({
                 {
                     var ent = $col.parents('tr').attr('value');
                     var med = diary.data.savedData[ent]['medication'];
-                    if(med == 'true' || med == true)
+                    if(med == true)
                         return true;
                     return false;
                 }
@@ -813,7 +821,7 @@ var UI = jClass({
         var self = this;
         if(type == 'bool')
         {
-            if(entry == true || entry == 'true')
+            if(entry == true)
                 return _('Yes');
             else
                 return _('No');
@@ -862,7 +870,7 @@ var UI = jClass({
         {
             var effectMap = {
                 none: _('None'),
-                some: _('Some'),
+                medium: _('Some'),
                 good: _('Very good'),
                 regressed: _('Good, but regressed')
             };
@@ -886,6 +894,12 @@ var UI = jClass({
         if(val.length == 1)
             return '0'+val;
         return val;
+    },
+    quickDialog: function (text)
+    {
+        var buttons = {};
+        buttons[_('Ok')] = function () { $(this).dialog('close') };
+        $('<div/>').html(text).dialog({ buttons: buttons});
     }
 });
 
@@ -911,7 +925,13 @@ var migraineDiary = jClass({
 		{
 			self.appendData(wizard.data);
 			self.saveData();
-			$('#addEntry').html(_('Done, data saved (locally).'));
+			$('#addEntry').html(_('Done, data saved (locally in your browser).')+' <a href="#" id="learnMoreLocalStorage">'+_('Learn more about storage')+'.</a>');
+            $('#learnMoreLocalStorage').click(function (e)
+            {
+                e.preventDefault();
+                self.UI.quickDialog(_('All data saved by the Migraine Diary is saved locally in your browser. No data is sent to the server. This storage is permanent accross browser sessions, but if you explicitly delete "local storage" data from your browser, it will be permanently lost.'));
+                return false;
+            });
 		});
 	},
 
@@ -934,7 +954,18 @@ var migraineDiary = jClass({
 
 	saveData: function ()
 	{
-		$.jStorage.set(this.confKey, this.data);
+        try
+        {
+            $.jStorage.set(this.confKey, this.data);
+        }
+        catch(e)
+        {
+            var err = e.message;
+            if(err == null)
+                err = e;
+            var buttons = {};
+            this.UI.quickDialog(_('A fatal error occurred while saving the data. Your data has probably not been saved.')+'<br /><br />Error:'+err);
+        }
 	}
 });
 
