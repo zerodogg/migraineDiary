@@ -365,6 +365,7 @@ var UI = jClass({
         });
 
 		this.buildWizard(saveFunc,$('#addEntry'));
+        $(document).bind('keydown', 'ctrl+b', function () { self.showDebugDialog() });
 	},
 
 	buildWizard: function (saveFunc, parent)
@@ -799,7 +800,7 @@ var UI = jClass({
                 value = new Date(value);
                 value = Math.round(value.getTime()/1000);
             }
-            if(value == '' || value == null)
+            if(value === '' || value === null)
                 return;
             var entry = $col.parents('tr').attr('value');
             diary.data.savedData[entry][type] = value;
@@ -900,6 +901,26 @@ var UI = jClass({
             return '0'+val;
         return val;
     },
+
+    showDebugDialog: function ()
+    {
+        var info = [];
+        info.push('migraineDiary version '+diary.version);
+        info.push('Data version: '+diary.data.dataVersion);
+        info.push('User agent: '+navigator.userAgent);
+        var language = navigator.language || navigator.browserLanguage;
+        info.push('Language: '+language);
+        info.push('Hosted at: '+document.domain);
+
+        var buttons = {};
+        buttons[_('Ok')] = function () { $(this).dialog('close') };
+        $('<div/>').html(info.join('<br />')).dialog({
+            buttons: buttons,
+            minWidth: '400',
+            title: 'migraineDiary debug dialog'
+        });
+    },
+
     quickDialog: function (text)
     {
         var buttons = {};
@@ -911,6 +932,7 @@ var UI = jClass({
 var migraineDiary = jClass({
 	UI: null,
 
+    version: '0.1',
 	confKey: 'org.zerodogg.migraineDiary',
 
 	data: {
@@ -978,7 +1000,7 @@ var diary;
 
 $(function ()
 {
-    $('title').text(_('Migraine Diary'));
+    $('title').text(_('Migraine Diary')+' beta');
 	diary = new migraineDiary();
 	diary.runUI();
 });
