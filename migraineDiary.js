@@ -18,16 +18,16 @@
 
 jQuery.browser.isMobile = function ()
 {
-	return navigator.userAgent.match(/(Opera (Mi|Mo)|Android|Mobile)/);
+    return navigator.userAgent.match(/(Opera (Mi|Mo)|Android|Mobile)/);
 };
 
 var UIPrompts = jClass({
     getPromptValue: function (type,search)
     {
-		var val = null;
-		if(type == 'selector')
-		{
-			val = search.find('input:radio:checked').val();
+        var val = null;
+        if(type == 'selector')
+        {
+            val = search.find('input:radio:checked').val();
             if(val == 'true')
             {
                 val = true;
@@ -36,15 +36,15 @@ var UIPrompts = jClass({
             {
                 val = false;
             }
-		}
-		else if(type == 'text')
-		{
-			val = search.find('input').val();
-		}
-		else if(type == 'time')
-		{
-			val = search.find('#hour').val()+':'+search.find('#minute').val();
-		}
+        }
+        else if(type == 'text')
+        {
+            val = search.find('input').val();
+        }
+        else if(type == 'time')
+        {
+            val = search.find('#hour').val()+':'+search.find('#minute').val();
+        }
         else if(type == 'date')
         {
             val = $('#datePromptEntity').datepicker('getDate');
@@ -56,41 +56,41 @@ var UIPrompts = jClass({
         return val;
     },
 
-	selectorPrompt: function (area,data)
-	{
-		$.each(data.selections, function (int,setting)
-		{
+    selectorPrompt: function (area,data)
+    {
+        $.each(data.selections, function (int,setting)
+        {
 
             var id = 'selectorPrompt_'+setting.val;
             if(area.attr('id'))
                 id = id + '_'+area.attr('id');
-			var e = $('<input />');
-			e.attr('type','radio');
-			e.attr('name','radio');
-			e.attr('value',setting.val);
-			e.attr('id',id);
-			area.append(e);
-			var label = $('<label />');
-			label.attr('for',id);
-			label.html(setting.label);
-			area.append(label);
-			area.append('<br />');
-		});
-	},
+            var e = $('<input />');
+            e.attr('type','radio');
+            e.attr('name','radio');
+            e.attr('value',setting.val);
+            e.attr('id',id);
+            area.append(e);
+            var label = $('<label />');
+            label.attr('for',id);
+            label.html(setting.label);
+            area.append(label);
+            area.append('<br />');
+        });
+    },
 
-	textPrompt: function (area,data)
-	{
-		var e = $('<input type="text" />');
-		e.css({maxWidth:'100%', minWidth: '50%'});
-		area.append(data.prompt);
-		area.append('&nbsp;');
-		area.append(e);
-	},
+    textPrompt: function (area,data)
+    {
+        var e = $('<input type="text" />');
+        e.css({maxWidth:'100%', minWidth: '50%'});
+        area.append(data.prompt);
+        area.append('&nbsp;');
+        area.append(e);
+    },
 
     datePrompt: function (area,data)
     {
-		area.append(data.prompt);
-		area.append('&nbsp;');
+        area.append(data.prompt);
+        area.append('&nbsp;');
         $('<div />').attr('id','datePromptEntity').appendTo(area);
         $('#datePromptEntity').datepicker({
             // UI uses the international date format, but this isn't displayed,
@@ -105,170 +105,170 @@ var UIPrompts = jClass({
         }
     },
 
-	timePrompt: function (area,data)
-	{
-		area.append(data.prompt);
-		area.append('&nbsp;');
+    timePrompt: function (area,data)
+    {
+        area.append(data.prompt);
+        area.append('&nbsp;');
 
         data = $.extend({ hour: 7, minute: 0}, data);
 
-		var h = $('<select name="hour" id="hour"/>');
-		for(var i = 0; i < 24; i++)
-		{
-			var opt = $('<option value="'+i+'" />');
-			if(i == data.hour)
-				opt.attr('selected','selected');
-			opt.html(i);
-			h.append(opt);
-		}
-		area.append(h);
-		var m = $('<select name="minute" id="minute" />');
-		$.each(['00','15','30','45'],function (e,i)
-		{
-			var opt = $('<option value="'+i+'" />');
-			if(e == data.minute)
-				opt.attr('selected','selected');
-			opt.html(i);
-			m.append(opt);
-		});
-		area.append(m);
-	}
+        var h = $('<select name="hour" id="hour"/>');
+        for(var i = 0; i < 24; i++)
+        {
+            var opt = $('<option value="'+i+'" />');
+            if(i == data.hour)
+                opt.attr('selected','selected');
+            opt.html(i);
+            h.append(opt);
+        }
+        area.append(h);
+        var m = $('<select name="minute" id="minute" />');
+        $.each(['00','15','30','45'],function (e,i)
+        {
+            var opt = $('<option value="'+i+'" />');
+            if(e == data.minute)
+                opt.attr('selected','selected');
+            opt.html(i);
+            m.append(opt);
+        });
+        area.append(m);
+    }
 });
 
 var wizard = jClass.extend(UIPrompts,{
 
-	steps: [],
+    steps: [],
 
-	data: {},
+    data: {},
 
-	currStep: 0,
+    currStep: 0,
 
-	currType: null,
-	currDataKey: null,
+    currType: null,
+    currDataKey: null,
 
-	onDoneRun: null,
+    onDoneRun: null,
 
-	parent: null,
+    parent: null,
 
-	_constructor: function (steps,onDone,parent)
-	{
-		this.steps = steps;
-		this.onDoneRun = onDone;
-		this.parent = parent;
-		this.prepContainer();
-	},
+    _constructor: function (steps,onDone,parent)
+    {
+        this.steps = steps;
+        this.onDoneRun = onDone;
+        this.parent = parent;
+        this.prepContainer();
+    },
 
-	prepContainer: function ()
-	{
-		this._container = $('<div/>').appendTo(this.parent).addClass('wizardContainer');
-	},
+    prepContainer: function ()
+    {
+        this._container = $('<div/>').appendTo(this.parent).addClass('wizardContainer');
+    },
 
-	newStep: function (data)
-	{
-		var c = this._container;
-		c.empty();
-		var info = $('<div/>');
-		var title = $('<b/>').html(data.title);
-		info.append(title);
-		info.append('<hr/>');
-		if(data.information != '')
-		{
-			var infoText = $('<div/>');
-			infoText.html(data.information);
-			infoText.append('<br /><br />');
-			info.append(infoText);
-		}
-		var buildPart = $('<div/>');
-		info.append(buildPart);
-		c.append(info);
-		info.append('<br />');
+    newStep: function (data)
+    {
+        var c = this._container;
+        c.empty();
+        var info = $('<div/>');
+        var title = $('<b/>').html(data.title);
+        info.append(title);
+        info.append('<hr/>');
+        if(data.information != '')
+        {
+            var infoText = $('<div/>');
+            infoText.html(data.information);
+            infoText.append('<br /><br />');
+            info.append(infoText);
+        }
+        var buildPart = $('<div/>');
+        info.append(buildPart);
+        c.append(info);
+        info.append('<br />');
 
-		var _self = this;
-		var label = _('Continue');
-		if(this.currStep >= (this.steps.length-1))
-		{
-			label = _('Finish');
-		}
-		var warningArea = $('<div/>').css({float:'left', 'font-weight':'bold'});
-		warningArea.hide();
-		info.append(warningArea);
+        var _self = this;
+        var label = _('Continue');
+        if(this.currStep >= (this.steps.length-1))
+        {
+            label = _('Finish');
+        }
+        var warningArea = $('<div/>').css({float:'left', 'font-weight':'bold'});
+        warningArea.hide();
+        info.append(warningArea);
 
-		var button = $('<div/>').html(label).button().click(function ()
-		{
-			if (_self.saveCurrent() == false)
-			{
-				warningArea.html('You must select a value').fadeIn();
-				return false;
-			}
-			warningArea.fadeOut();
-			if(data.onDone)
-			{
-				if(data.onDone.call(null,_self.data[_self.currDataKey],_self) == false)
-					return false;
-			}
-			_self.nextStep();
-		});
-		button.attr('id','wizardContinueButton');
+        var button = $('<div/>').html(label).button().click(function ()
+        {
+            if (_self.saveCurrent() == false)
+            {
+                warningArea.html('You must select a value').fadeIn();
+                return false;
+            }
+            warningArea.fadeOut();
+            if(data.onDone)
+            {
+                if(data.onDone.call(null,_self.data[_self.currDataKey],_self) == false)
+                    return false;
+            }
+            _self.nextStep();
+        });
+        button.attr('id','wizardContinueButton');
 
-		info.append(button);
-		info.append('<div style="clear:both;" />');
+        info.append(button);
+        info.append('<div style="clear:both;" />');
 
-		return buildPart;
-	},
+        return buildPart;
+    },
 
-	run: function ()
-	{
-		this.runStep(0);
-	},
+    run: function ()
+    {
+        this.runStep(0);
+    },
 
-	runStep: function (step)
-	{
-		this.currStep = step;
+    runStep: function (step)
+    {
+        this.currStep = step;
 
-		var d = this.steps[step];
+        var d = this.steps[step];
 
-		this.currType = d.type;
-		this.currDataKey = d.setting;
+        this.currType = d.type;
+        this.currDataKey = d.setting;
 
-		var area = this.newStep(d);
+        var area = this.newStep(d);
 
-		if(d.type == 'selector')
-		{
-			this.selectorPrompt(area,d);
-		}
-		else if(d.type == 'text')
-		{
-			this.textPrompt(area,d);
-		}
-		else if(d.type == 'time')
-		{
-			this.timePrompt(area,d);
-		}
-	},
+        if(d.type == 'selector')
+        {
+            this.selectorPrompt(area,d);
+        }
+        else if(d.type == 'text')
+        {
+            this.textPrompt(area,d);
+        }
+        else if(d.type == 'time')
+        {
+            this.timePrompt(area,d);
+        }
+    },
 
-	runNamedStep: function (name)
-	{
+    runNamedStep: function (name)
+    {
         var step = this.getStepByName(name,true);
-		if(step != null)
-		{
-			this.runStep(step);
-		}
-		else
-		{
-			throw('Unknown step identifier: '+name);
-		}
-	},
+        if(step != null)
+        {
+            this.runStep(step);
+        }
+        else
+        {
+            throw('Unknown step identifier: '+name);
+        }
+    },
 
     getStepByName: function (name, wantsInt)
     {
         var step;
-		$.each(this.steps, function(i,val)
-		{
-			if(val.setting == name)
-			{
-				step = i;
-			}
-		});
+        $.each(this.steps, function(i,val)
+        {
+            if(val.setting == name)
+            {
+                step = i;
+            }
+        });
 
         if(wantsInt)
         {
@@ -280,16 +280,16 @@ var wizard = jClass.extend(UIPrompts,{
         }
     },
 
-	saveCurrent: function ()
-	{
+    saveCurrent: function ()
+    {
         var val = this.getStepValue(null,null);
-		if(val === '' || val === null)
-			return false;
+        if(val === '' || val === null)
+            return false;
 
-		this.data[this.currDataKey] = val;
+        this.data[this.currDataKey] = val;
 
-		return true;
-	},
+        return true;
+    },
 
     getStepValue: function ()
     {
@@ -298,24 +298,24 @@ var wizard = jClass.extend(UIPrompts,{
         return this.getPromptValue(type,search);
     },
 
-	nextStep: function ()
-	{
-		if( (this.currStep +1) > (this.steps.length -1))
-		{
-			this.done();
-		}
-		else
-		{
-			this.runStep( this.currStep+1 );
-		}
-	},
+    nextStep: function ()
+    {
+        if( (this.currStep +1) > (this.steps.length -1))
+        {
+            this.done();
+        }
+        else
+        {
+            this.runStep( this.currStep+1 );
+        }
+    },
 
-	done: function ()
-	{
-		this._container.empty();
-		if(this.onDoneRun)
-			this.onDoneRun.call(null,this);
-	}
+    done: function ()
+    {
+        this._container.empty();
+        if(this.onDoneRun)
+            this.onDoneRun.call(null,this);
+    }
 
 });
 
@@ -335,27 +335,27 @@ var UI = jClass({
     wizard: null,
     prompts: null,
 
-	_constructor: function (saveFunc)
-	{
-		if($.browser.isMobile())
-			$('body').addClass('mobile');
-		this.buildUI(saveFunc);
-	},
+    _constructor: function (saveFunc)
+    {
+        if($.browser.isMobile())
+            $('body').addClass('mobile');
+        this.buildUI(saveFunc);
+    },
 
     /*
      * Wizard UI bits
      */
 
-	buildUI: function (saveFunc)
-	{
+    buildUI: function (saveFunc)
+    {
         var self = this;
-		var tabDiv = $('<div />');
-		var tabBar = $('<ul />').append('<li><a href="#addEntry">'+_('Add entry')+'</a></li>')
-								.append('<li><a href="#viewEntries">'+_('View entries')+'</a></li>');
-		tabDiv.append(tabBar);
-		tabDiv.append('<div id="addEntry"></div>');
-		tabDiv.append('<div id="viewEntries">View entries tab</div>');
-		$('body').append(tabDiv);
+        var tabDiv = $('<div />');
+        var tabBar = $('<ul />').append('<li><a href="#addEntry">'+_('Add entry')+'</a></li>')
+                                .append('<li><a href="#viewEntries">'+_('View entries')+'</a></li>');
+        tabDiv.append(tabBar);
+        tabDiv.append('<div id="addEntry"></div>');
+        tabDiv.append('<div id="viewEntries">View entries tab</div>');
+        $('body').append(tabDiv);
         tabDiv.tabs({
             show: function (event,UI)
             {
@@ -364,229 +364,229 @@ var UI = jClass({
             },
         });
 
-		this.buildWizard(saveFunc,$('#addEntry'));
+        this.buildWizard(saveFunc,$('#addEntry'));
         $(document).bind('keydown', 'ctrl+b', function () { self.showDebugDialog() });
-	},
+    },
 
-	buildWizard: function (saveFunc, parent)
-	{
-		var wizardDefinition =  [
-			{
-				type: 'selector',
-				setting: 'intensity',
-				title: _('Migraine intensity'),
-				information: _('How intense was the migraine?'),
-				selections:
-				[
-					{
-						val:'1',
-						label: _('Light headache (able to function)'),
-					},
-					{
-						val:'2',
-						label: _('Moderate headache (able to function, but somewhat difficuilt)')
-					},
-					{
-						val:'3',
-						label: _('Severe headache (unable to function)')
-					},
-				]
-			},
+    buildWizard: function (saveFunc, parent)
+    {
+        var wizardDefinition =  [
+            {
+                type: 'selector',
+                setting: 'intensity',
+                title: _('Migraine intensity'),
+                information: _('How intense was the migraine?'),
+                selections:
+                [
+                    {
+                        val:'1',
+                        label: _('Light headache (able to function)'),
+                    },
+                    {
+                        val:'2',
+                        label: _('Moderate headache (able to function, but somewhat difficuilt)')
+                    },
+                    {
+                        val:'3',
+                        label: _('Severe headache (unable to function)')
+                    },
+                ]
+            },
 
-			{
-				type: 'time',
-				setting: 'start',
-				title: _('Started'),
-				information: '',
-				prompt: _('When did the migraine start?')
-			},
+            {
+                type: 'time',
+                setting: 'start',
+                title: _('Started'),
+                information: '',
+                prompt: _('When did the migraine start?')
+            },
 
-			{
-				type: 'selector',
-				setting: 'medication',
-				title: _('Medication'),
-				information: _('Did you take any medication?'),
-				selections:
-				[
-					{
-						val:true,
-						label:_('Yes')
-					},
-					{
-						val:false,
-						label:_('No')
-					}
-				],
-				onDone: function (value,wizard)
-				{
-					if(value == true)
-						return true;
-					wizard.runNamedStep('sleep');
-					return false;
-				},
-			},
+            {
+                type: 'selector',
+                setting: 'medication',
+                title: _('Medication'),
+                information: _('Did you take any medication?'),
+                selections:
+                [
+                    {
+                        val:true,
+                        label:_('Yes')
+                    },
+                    {
+                        val:false,
+                        label:_('No')
+                    }
+                ],
+                onDone: function (value,wizard)
+                {
+                    if(value == true)
+                        return true;
+                    wizard.runNamedStep('sleep');
+                    return false;
+                },
+            },
 
-			{
-				type: 'selector',
-				setting: 'medEffect',
-				title: _('Medication (effect)'),
-				information: _('What effect did the medication have?'),
-				selections:
-				[
-					{
-						val:'none',
-						label:_('None')
-					},
-					{
-						val:'medium',
-						label:_('Some')
-					},
-					{
-						val:'good',
-						label:_('Very good')
-					},
-					{
-						val:'regressed',
-						label:_('Good, but regressed')
-					}
-				]
-			},
+            {
+                type: 'selector',
+                setting: 'medEffect',
+                title: _('Medication (effect)'),
+                information: _('What effect did the medication have?'),
+                selections:
+                [
+                    {
+                        val:'none',
+                        label:_('None')
+                    },
+                    {
+                        val:'medium',
+                        label:_('Some')
+                    },
+                    {
+                        val:'good',
+                        label:_('Very good')
+                    },
+                    {
+                        val:'regressed',
+                        label:_('Good, but regressed')
+                    }
+                ]
+            },
 
-			{
-				type: 'selector',
-				setting: 'sleep',
-				title: _('Sleep'),
-				information: _('Approx. how long did you sleep last night?'),
-				changeInformation: _('Approx. how long did you sleep?'),
-				selections:
-				[
-					{
-						val:'4-',
-						label:_('4 hours or less'),
-					},
-					{
-						val:'5',
-						label:_('5 hours'),
-					},
-					{
-						val:'6',
-						label:_('6 hours'),
-					},
-					{
-						val:'7',
-						label:_('7 hours'),
-					},
-					{
-						val:'8',
-						label:_('8 hours'),
-					},
-					{
-						val:'9',
-						label:_('9 hours'),
-					},
-					{
-						val:'10',
-						label:_('10 hours'),
-					},
-					{
-						val:'11',
-						label:_('11 hours'),
-					},
-					{
-						val:'12+',
-						label:_('12 hours or more'),
-					},
-				]
-			},
+            {
+                type: 'selector',
+                setting: 'sleep',
+                title: _('Sleep'),
+                information: _('Approx. how long did you sleep last night?'),
+                changeInformation: _('Approx. how long did you sleep?'),
+                selections:
+                [
+                    {
+                        val:'4-',
+                        label:_('4 hours or less'),
+                    },
+                    {
+                        val:'5',
+                        label:_('5 hours'),
+                    },
+                    {
+                        val:'6',
+                        label:_('6 hours'),
+                    },
+                    {
+                        val:'7',
+                        label:_('7 hours'),
+                    },
+                    {
+                        val:'8',
+                        label:_('8 hours'),
+                    },
+                    {
+                        val:'9',
+                        label:_('9 hours'),
+                    },
+                    {
+                        val:'10',
+                        label:_('10 hours'),
+                    },
+                    {
+                        val:'11',
+                        label:_('11 hours'),
+                    },
+                    {
+                        val:'12+',
+                        label:_('12 hours or more'),
+                    },
+                ]
+            },
 
-			{
-				type: 'selector',
-				setting: 'drink',
-				title: _('Drink'),
-				information: _('Approx. how much have you had to drink today?'),
-				changeInformation: _('Approx. how much have you had to drink?'),
-				selections:
-				[
-					{
-						val:'1-',
-						label:_('Less than 1 litre'),
-					},
-					{
-						val:'1',
-						label:_('1 litre'),
-					},
-					{
-						val:'1.5',
-						label:_('1.5 litre'),
-					},
-					{
-						val:'2',
-						label:_('2 litre'),
-					},
-					{
-						val:'2.5',
-						label:_('2.5 litre'),
-					},
-					{
-						val:'3+',
-						label:_('3 litre or more'),
-					}
-				],
-				onDone: function(value,wizard) 
-				{
-					if(diary.data.sex == 'male')
-					{
-						wizard.done();
-						return false;
-					}
-					return true;
-				}
-			},
-		];
+            {
+                type: 'selector',
+                setting: 'drink',
+                title: _('Drink'),
+                information: _('Approx. how much have you had to drink today?'),
+                changeInformation: _('Approx. how much have you had to drink?'),
+                selections:
+                [
+                    {
+                        val:'1-',
+                        label:_('Less than 1 litre'),
+                    },
+                    {
+                        val:'1',
+                        label:_('1 litre'),
+                    },
+                    {
+                        val:'1.5',
+                        label:_('1.5 litre'),
+                    },
+                    {
+                        val:'2',
+                        label:_('2 litre'),
+                    },
+                    {
+                        val:'2.5',
+                        label:_('2.5 litre'),
+                    },
+                    {
+                        val:'3+',
+                        label:_('3 litre or more'),
+                    }
+                ],
+                onDone: function(value,wizard) 
+                {
+                    if(diary.data.sex == 'male')
+                    {
+                        wizard.done();
+                        return false;
+                    }
+                    return true;
+                }
+            },
+        ];
 
-	if(diary.data.sex != 'male')
-	{
-		wizardDefinition.push({
-				type: 'selector',
-				setting: 'mens',
-				title: _('Menstral period'),
-				information: _('Did you have your menstral period?'),
-				selections:
-				[
-					{
-						val:true,
-						label:_('Yes'),
-					},
-					{
-						val:false,
-						label:_('No'),
-					},
-					{
-						val: 'na',
-						label:_('N/A (not female)'),
-					},
-				],
-				onDone: function(value,wizard) 
-				{
-					if(value == 'na')
-					{
-						diary.data.sex = 'male';
-					}
-					return true;
-				}
-			});
-		}
+    if(diary.data.sex != 'male')
+    {
+        wizardDefinition.push({
+                type: 'selector',
+                setting: 'mens',
+                title: _('Menstral period'),
+                information: _('Did you have your menstral period?'),
+                selections:
+                [
+                    {
+                        val:true,
+                        label:_('Yes'),
+                    },
+                    {
+                        val:false,
+                        label:_('No'),
+                    },
+                    {
+                        val: 'na',
+                        label:_('N/A (not female)'),
+                    },
+                ],
+                onDone: function(value,wizard) 
+                {
+                    if(value == 'na')
+                    {
+                        diary.data.sex = 'male';
+                    }
+                    return true;
+                }
+            });
+        }
         this.wizardDefinition = wizardDefinition;
-		var myWizard = new wizard(wizardDefinition,saveFunc,parent);
+        var myWizard = new wizard(wizardDefinition,saveFunc,parent);
 
-		myWizard.run();
+        myWizard.run();
 
         // We set this.prompts to the wizard as well, as the wizard
         // extends UIPrompts, and thus it makes little sense to instantiate
         // a second one, merely for the sake of using methods already available
         // via .wizard
         this.prompts = this.wizard = myWizard;
-	},
+    },
 
     /*
      * View/edit UI bits
@@ -930,57 +930,57 @@ var UI = jClass({
 });
 
 var migraineDiary = jClass({
-	UI: null,
+    UI: null,
 
     version: '0.1',
-	confKey: 'org.zerodogg.migraineDiary',
+    confKey: 'org.zerodogg.migraineDiary',
 
-	data: {
-		dataVersion:1,
-		savedData:[]
-	},
+    data: {
+        dataVersion:1,
+        savedData:[]
+    },
 
-	_constructor: function ()
-	{
-		this.loadData();
-	},
+    _constructor: function ()
+    {
+        this.loadData();
+    },
 
-	runUI: function ()
-	{
-		var self = this;
-		this.UI = new UI(function (wizard)
-		{
-			self.appendData(wizard.data);
-			self.saveData();
-			$('#addEntry').html(_('Done, data saved (locally in your browser).')+' <a href="#" id="learnMoreLocalStorage">'+_('Learn more about storage')+'.</a>');
+    runUI: function ()
+    {
+        var self = this;
+        this.UI = new UI(function (wizard)
+        {
+            self.appendData(wizard.data);
+            self.saveData();
+            $('#addEntry').html(_('Done, data saved (locally in your browser).')+' <a href="#" id="learnMoreLocalStorage">'+_('Learn more about storage')+'.</a>');
             $('#learnMoreLocalStorage').click(function (e)
             {
                 e.preventDefault();
                 self.UI.quickDialog(_('All data saved by the Migraine Diary is saved locally in your browser. No data is sent to the server. This storage is permanent accross browser sessions, but if you explicitly delete "local storage" data from your browser, it will be permanently lost.'));
                 return false;
             });
-		});
-	},
+        });
+    },
 
-	appendData: function (data)
-	{
-		// Unix timestamp
-		data.savedAt = Math.round(new Date().getTime() / 1000);
+    appendData: function (data)
+    {
+        // Unix timestamp
+        data.savedAt = Math.round(new Date().getTime() / 1000);
 
-		this.data.savedData.push(data);
-	},
+        this.data.savedData.push(data);
+    },
 
-	loadData: function ()
-	{
-		var data = $.jStorage.get(this.confKey);
-		if(data)
-		{
-			this.data = data;
-		}
-	},
+    loadData: function ()
+    {
+        var data = $.jStorage.get(this.confKey);
+        if(data)
+        {
+            this.data = data;
+        }
+    },
 
-	saveData: function ()
-	{
+    saveData: function ()
+    {
         try
         {
             $.jStorage.set(this.confKey, this.data);
@@ -993,7 +993,7 @@ var migraineDiary = jClass({
             var buttons = {};
             this.UI.quickDialog(_('A fatal error occurred while saving the data. Your data has probably not been saved.')+'<br /><br />Error:'+err);
         }
-	}
+    }
 });
 
 var diary;
@@ -1001,6 +1001,6 @@ var diary;
 $(function ()
 {
     $('title').text(_('Migraine Diary')+' beta');
-	diary = new migraineDiary();
-	diary.runUI();
+    diary = new migraineDiary();
+    diary.runUI();
 });
