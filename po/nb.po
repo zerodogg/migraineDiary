@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: migraineDiary\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-09 12:22+0200\n"
-"PO-Revision-Date: 2010-10-09 12:15+0200\n"
+"POT-Creation-Date: 2010-10-30 20:27+0200\n"
+"PO-Revision-Date: 2010-10-30 20:27+0200\n"
 "Last-Translator: MagicPO 0.4 (automated)\n"
 "Language-Team: Norwegian Nynorsk\n"
 "Language: Norwegian Nynorsk\n"
@@ -81,6 +81,10 @@ msgstr "Fortsett"
 msgid "Finish"
 msgstr "Ferdig"
 
+#: migraineDiary.js:200
+msgid "You must select a value"
+msgstr "Du m&aring; velge noe"
+
 #: migraineDiary.js:353
 msgid "Add entry"
 msgstr "Legg til oppf&oslash;ring"
@@ -89,235 +93,235 @@ msgstr "Legg til oppf&oslash;ring"
 msgid "View entries"
 msgstr "Vis oppf&oslash;ringer"
 
-#: migraineDiary.js:376
+#: migraineDiary.js:377
 msgid "Migraine intensity"
 msgstr "Migreneintensitet"
 
-#: migraineDiary.js:377
+#: migraineDiary.js:378
 msgid "How intense was the migraine?"
 msgstr "Hvor intens var migrenen?"
 
-#: migraineDiary.js:382
+#: migraineDiary.js:383
 msgid "Light headache (able to function)"
 msgstr "Lett hodepine (g&aring; greitt &aring; fungere)"
 
-#: migraineDiary.js:386
+#: migraineDiary.js:387
 msgid "Moderate headache (able to function, but somewhat difficuilt)"
 msgstr "Moderat hodepine (fungerer, men det er vanskeleg)"
 
-#: migraineDiary.js:390
+#: migraineDiary.js:391
 msgid "Severe headache (unable to function)"
 msgstr "Kraftig hodepine (klarer ikke &aring; fungere)"
 
-#: migraineDiary.js:398
+#: migraineDiary.js:399
 msgid "Started"
 msgstr "Startet"
 
-#: migraineDiary.js:400
+#: migraineDiary.js:401
 msgid "When did the migraine start?"
 msgstr "N&aring;r startet migrenen?"
 
-#: migraineDiary.js:406
+#: migraineDiary.js:407
 msgid "Medication"
 msgstr "Medisiner"
 
-#: migraineDiary.js:407
+#: migraineDiary.js:408
 msgid "Did you take any medication?"
 msgstr "Tok du noen medisiner?"
 
-#: migraineDiary.js:412 migraineDiary.js:557 migraineDiary.js:690
-#: migraineDiary.js:825
+#: migraineDiary.js:413 migraineDiary.js:558 migraineDiary.js:692
+#: migraineDiary.js:832
 msgid "Yes"
 msgstr "Ja"
 
-#: migraineDiary.js:416 migraineDiary.js:561 migraineDiary.js:697
-#: migraineDiary.js:827
+#: migraineDiary.js:417 migraineDiary.js:562 migraineDiary.js:699
+#: migraineDiary.js:834
 msgid "No"
 msgstr "Nei"
 
-#: migraineDiary.js:431
+#: migraineDiary.js:432
 msgid "Medication (effect)"
 msgstr "Medisiner (effekt)"
 
-#: migraineDiary.js:432
+#: migraineDiary.js:433
 msgid "What effect did the medication have?"
 msgstr "Hvilken effekt hadde medisinene?"
 
-#: migraineDiary.js:437 migraineDiary.js:872
+#: migraineDiary.js:438 migraineDiary.js:879
 msgid "None"
 msgstr "Ingen"
 
-#: migraineDiary.js:441 migraineDiary.js:873
+#: migraineDiary.js:442 migraineDiary.js:880
 msgid "Some"
 msgstr "Noen"
 
-#: migraineDiary.js:445 migraineDiary.js:874
+#: migraineDiary.js:446 migraineDiary.js:881
 msgid "Very good"
 msgstr "Veldig bra"
 
-#: migraineDiary.js:449 migraineDiary.js:875
+#: migraineDiary.js:450 migraineDiary.js:882
 msgid "Good, but regressed"
 msgstr "Bra, men hadde tilbakefall"
 
-#: migraineDiary.js:457
+#: migraineDiary.js:458
 msgid "Sleep"
 msgstr "S&oslash;vn"
 
-#: migraineDiary.js:458
+#: migraineDiary.js:459
 msgid "Approx. how long did you sleep last night?"
 msgstr "Ca. hvor lenge sov du i natt?"
 
-#: migraineDiary.js:459
+#: migraineDiary.js:460
 msgid "Approx. how long did you sleep?"
 msgstr "Ca. hvor lenge sov du?"
 
-#: migraineDiary.js:464
+#: migraineDiary.js:465
 msgid "4 hours or less"
 msgstr "4 timer eller mindre"
 
-#: migraineDiary.js:468
+#: migraineDiary.js:469
 msgid "5 hours"
 msgstr "5 timer"
 
-#: migraineDiary.js:472
+#: migraineDiary.js:473
 msgid "6 hours"
 msgstr "6 timer"
 
-#: migraineDiary.js:476
+#: migraineDiary.js:477
 msgid "7 hours"
 msgstr "7 timer"
 
-#: migraineDiary.js:480
+#: migraineDiary.js:481
 msgid "8 hours"
 msgstr "8 timer"
 
-#: migraineDiary.js:484
+#: migraineDiary.js:485
 msgid "9 hours"
 msgstr "9 timer"
 
-#: migraineDiary.js:488
+#: migraineDiary.js:489
 msgid "10 hours"
 msgstr "10 timer"
 
-#: migraineDiary.js:492
+#: migraineDiary.js:493
 msgid "11 hours"
 msgstr "11 timer"
 
-#: migraineDiary.js:496
+#: migraineDiary.js:497
 msgid "12 hours or more"
 msgstr "12 timer eller mer"
 
-#: migraineDiary.js:504
+#: migraineDiary.js:505
 msgid "Drink"
 msgstr "Drikke"
 
-#: migraineDiary.js:505
+#: migraineDiary.js:506
 msgid "Approx. how much have you had to drink today?"
 msgstr "Ca. hvor mye har du drukket i dag?"
 
-#: migraineDiary.js:506
+#: migraineDiary.js:507
 msgid "Approx. how much have you had to drink?"
 msgstr "Ca. hvor mye drakk du?"
 
-#: migraineDiary.js:511
+#: migraineDiary.js:512
 msgid "Less than 1 litre"
 msgstr "Mindre enn 1 liter"
 
-#: migraineDiary.js:515
+#: migraineDiary.js:516
 msgid "1 litre"
 msgstr "1 liter"
 
-#: migraineDiary.js:519
+#: migraineDiary.js:520
 msgid "1.5 litre"
 msgstr "1.5 liter"
 
-#: migraineDiary.js:523
+#: migraineDiary.js:524
 msgid "2 litre"
 msgstr "2 liter"
 
-#: migraineDiary.js:527
+#: migraineDiary.js:528
 msgid "2.5 litre"
 msgstr "2.5 liter"
 
-#: migraineDiary.js:531
+#: migraineDiary.js:532
 msgid "3 litre or more"
 msgstr "3 liter eller mer"
 
-#: migraineDiary.js:551 migraineDiary.js:659
+#: migraineDiary.js:552 migraineDiary.js:661
 msgid "Menstral period"
 msgstr "Mensen"
 
-#: migraineDiary.js:552
+#: migraineDiary.js:553
 msgid "Did you have your menstral period?"
 msgstr "Hadde du mensen?"
 
-#: migraineDiary.js:565
+#: migraineDiary.js:566
 msgid "N/A (not female)"
 msgstr "N/A (er ikke kvinne)"
 
-#: migraineDiary.js:603
+#: migraineDiary.js:605
 msgid "Date"
 msgstr "Dato"
 
-#: migraineDiary.js:607
+#: migraineDiary.js:609
 msgid "Select the date for this entry"
 msgstr "Velg en dato for denne oppf&oslash;ringen"
 
-#: migraineDiary.js:614
+#: migraineDiary.js:616
 msgid "Intensity"
 msgstr "Intensitet"
 
-#: migraineDiary.js:619
+#: migraineDiary.js:621
 msgid "Took medication?"
 msgstr "Tok medisiner?"
 
-#: migraineDiary.js:636
+#: migraineDiary.js:638
 msgid "Med. effect"
 msgstr "Med. effekt"
 
-#: migraineDiary.js:649
+#: migraineDiary.js:651
 msgid "Hours of sleep"
 msgstr "Sov (timer)"
 
-#: migraineDiary.js:654
+#: migraineDiary.js:656
 msgid "Started at"
 msgstr "Startet"
 
-#: migraineDiary.js:698
+#: migraineDiary.js:700
 msgid "Are you sure you want to <b>permanently</b> delete this entry?"
 msgstr ""
 "Er du sikker p&aring; at du vil slette denne oppf&oslash;ringen "
 "<b>permanent</b>?"
 
-#: migraineDiary.js:787
+#: migraineDiary.js:794
 msgid "Save change"
 msgstr "Lagre endringen"
 
-#: migraineDiary.js:862
+#: migraineDiary.js:869
 msgid "Light"
 msgstr "Lett"
 
-#: migraineDiary.js:863
+#: migraineDiary.js:870
 msgid "Moderate"
 msgstr "Moderat"
 
-#: migraineDiary.js:864
+#: migraineDiary.js:871
 msgid "Severe"
 msgstr "Kraftig"
 
-#: migraineDiary.js:901
+#: migraineDiary.js:917 migraineDiary.js:928
 msgid "Ok"
 msgstr "Ok"
 
-#: migraineDiary.js:928
+#: migraineDiary.js:956
 msgid "Done, data saved (locally in your browser)."
 msgstr "Ferdig, data lagret (lokalt i nettleseren din)."
 
-#: migraineDiary.js:928
+#: migraineDiary.js:956
 msgid "Learn more about storage"
 msgstr "L&aelig;r mer om lagring"
 
-#: migraineDiary.js:932
+#: migraineDiary.js:960
 msgid ""
 "All data saved by the Migraine Diary is saved locally in your browser. No "
 "data is sent to the server. This storage is permanent accross browser "
@@ -329,7 +333,7 @@ msgstr ""
 "r du avslutter nettleseren, men viss du velger &aring; slette &laquo;lokal "
 "lagring&raquo; i nettleseren vil det bli slettet permanent."
 
-#: migraineDiary.js:967
+#: migraineDiary.js:995
 msgid ""
 "A fatal error occurred while saving the data. Your data has probably not "
 "been saved."
@@ -337,6 +341,6 @@ msgstr ""
 "En fatal feil oppstod under lagring. Oppf&oslash;ringene dine er "
 "sannsynligvis ikke lagret."
 
-#: migraineDiary.js:976
+#: migraineDiary.js:1004
 msgid "Migraine Diary"
 msgstr "Migrenedagbok"
