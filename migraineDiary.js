@@ -197,7 +197,7 @@ var wizard = jClass.extend(UIPrompts,{
         {
             if (_self.saveCurrent() == false)
             {
-                warningArea.html('You must select a value').fadeIn();
+                warningArea.html(_('You must select a value')).fadeIn();
                 return false;
             }
             warningArea.fadeOut();
@@ -283,7 +283,7 @@ var wizard = jClass.extend(UIPrompts,{
     saveCurrent: function ()
     {
         var val = this.getStepValue(null,null);
-        if(val === '' || val === null)
+        if(val === '' || val === null || val === undefined)
             return false;
 
         this.data[this.currDataKey] = val;
@@ -578,6 +578,7 @@ var UI = jClass({
         }
         this.wizardDefinition = wizardDefinition;
         var myWizard = new wizard(wizardDefinition,saveFunc,parent);
+        window.wiz = myWizard;
 
         myWizard.run();
 
@@ -800,7 +801,7 @@ var UI = jClass({
                 value = new Date(value);
                 value = Math.round(value.getTime()/1000);
             }
-            if(value === '' || value === null)
+            if(value === '' || value === null || value === undefined)
                 return;
             var entry = $col.parents('tr').attr('value');
             diary.data.savedData[entry][type] = value;
