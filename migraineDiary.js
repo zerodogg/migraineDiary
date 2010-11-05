@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+var diary;
+
 jQuery.browser.isMobile = function ()
 {
     return navigator.userAgent.match(/(Opera (Mi|Mo)|Android|Mobile)/);
@@ -361,11 +363,11 @@ var UI = jClass({
             {
                 if(UI.index == 1)
                     self.buildViewTAB();
-            },
+            }
         });
 
         this.buildWizard(saveFunc,$('#addEntry'));
-        $(document).bind('keydown', 'ctrl+b', function () { self.showDebugDialog() });
+        $(document).bind('keydown', 'ctrl+b', function () { self.showDebugDialog(); });
     },
 
     buildWizard: function (saveFunc, parent)
@@ -380,7 +382,7 @@ var UI = jClass({
                 [
                     {
                         val:'1',
-                        label: _('Light headache (able to function)'),
+                        label: _('Light headache (able to function)')
                     },
                     {
                         val:'2',
@@ -389,7 +391,7 @@ var UI = jClass({
                     {
                         val:'3',
                         label: _('Severe headache (unable to function)')
-                    },
+                    }
                 ]
             },
 
@@ -423,7 +425,7 @@ var UI = jClass({
                         return true;
                     wizard.runNamedStep('sleep');
                     return false;
-                },
+                }
             },
 
             {
@@ -462,40 +464,40 @@ var UI = jClass({
                 [
                     {
                         val:'4-',
-                        label:_('4 hours or less'),
+                        label:_('4 hours or less')
                     },
                     {
                         val:'5',
-                        label:_('5 hours'),
+                        label:_('5 hours')
                     },
                     {
                         val:'6',
-                        label:_('6 hours'),
+                        label:_('6 hours')
                     },
                     {
                         val:'7',
-                        label:_('7 hours'),
+                        label:_('7 hours')
                     },
                     {
                         val:'8',
-                        label:_('8 hours'),
+                        label:_('8 hours')
                     },
                     {
                         val:'9',
-                        label:_('9 hours'),
+                        label:_('9 hours')
                     },
                     {
                         val:'10',
-                        label:_('10 hours'),
+                        label:_('10 hours')
                     },
                     {
                         val:'11',
-                        label:_('11 hours'),
+                        label:_('11 hours')
                     },
                     {
                         val:'12+',
-                        label:_('12 hours or more'),
-                    },
+                        label:_('12 hours or more')
+                    }
                 ]
             },
 
@@ -509,27 +511,27 @@ var UI = jClass({
                 [
                     {
                         val:'1-',
-                        label:_('Less than 1 litre'),
+                        label:_('Less than 1 litre')
                     },
                     {
                         val:'1',
-                        label:_('1 litre'),
+                        label:_('1 litre')
                     },
                     {
                         val:'1.5',
-                        label:_('1.5 litre'),
+                        label:_('1.5 litre')
                     },
                     {
                         val:'2',
-                        label:_('2 litre'),
+                        label:_('2 litre')
                     },
                     {
                         val:'2.5',
-                        label:_('2.5 litre'),
+                        label:_('2.5 litre')
                     },
                     {
                         val:'3+',
-                        label:_('3 litre or more'),
+                        label:_('3 litre or more')
                     }
                 ],
                 onDone: function(value,wizard) 
@@ -541,7 +543,7 @@ var UI = jClass({
                     }
                     return true;
                 }
-            },
+            }
         ];
 
     if(diary.data.sex != 'male')
@@ -555,16 +557,16 @@ var UI = jClass({
                 [
                     {
                         val:true,
-                        label:_('Yes'),
+                        label:_('Yes')
                     },
                     {
                         val:false,
-                        label:_('No'),
+                        label:_('No')
                     },
                     {
                         val: 'na',
-                        label:_('N/A (not female)'),
-                    },
+                        label:_('N/A (not female)')
+                    }
                 ],
                 onDone: function(value,wizard) 
                 {
@@ -627,7 +629,7 @@ var UI = jClass({
                     }
                     else
                     {
-                        diary.data.savedData[entry]['medEffect'] = null;
+                        diary.data.savedData[entry].medEffect = null;
                         $col.parents('tr').find('[value=medEffect]').html('-');
                     }
                 }
@@ -639,7 +641,7 @@ var UI = jClass({
                 preCheck: function ($col)
                 {
                     var ent = $col.parents('tr').attr('value');
-                    var med = diary.data.savedData[ent]['medication'];
+                    var med = diary.data.savedData[ent].medication;
                     if(med == true)
                         return true;
                     return false;
@@ -816,9 +818,9 @@ var UI = jClass({
             buttons: buttons
         };
         if (info.minHeight)
-            dialogSettings['minHeight'] = info.minHeight;
+            dialogSettings.minHeight = info.minHeight;
         if(info.minWidth)
-            dialogSettings['minWidth'] = info.minWidth;
+            dialogSettings.minWidth = info.minWidth;
         $d.dialog(dialogSettings);
     },
 
@@ -835,14 +837,14 @@ var UI = jClass({
         }
         else if (type == 'time' || type == 'date')
         {
-            entry = parseInt(entry);
+            entry = parseInt(entry,10);
             if(entry > 1254329048)
             {
                 try
                 {
                     var dt = new Date(entry*1000);
                     var year = [ dt.getFullYear(), self.timePad(dt.getMonth()+1), self.timePad(dt.getDate()) ];
-                    var time = [ self.timePad(dt.getHours()), self.timePad(dt.getMinutes()) ];
+                    //var time = [ self.timePad(dt.getHours()), self.timePad(dt.getMinutes()) ];
                     var val = year.join('-'); // + ' ' + time.join(':');
                     return val;
                 }
@@ -914,7 +916,7 @@ var UI = jClass({
         info.push('Hosted at: '+document.domain);
 
         var buttons = {};
-        buttons[_('Ok')] = function () { $(this).dialog('close') };
+        buttons[_('Ok')] = function () { $(this).dialog('close'); };
         $('<div/>').html(info.join('<br />')).dialog({
             buttons: buttons,
             minWidth: '400',
@@ -991,13 +993,11 @@ var migraineDiary = jClass({
             var err = e.message;
             if(err == null)
                 err = e;
-            var buttons = {};
+            //var buttons = {};
             this.UI.quickDialog(_('A fatal error occurred while saving the data. Your data has probably not been saved.')+'<br /><br />Error:'+err);
         }
     }
 });
-
-var diary;
 
 $(function ()
 {
