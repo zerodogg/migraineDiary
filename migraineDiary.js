@@ -29,7 +29,7 @@ var UIPrompts = jClass({
         var val = null;
         if(type == 'selector')
         {
-            val = search.find('input:radio:checked').val();
+            val = search.find(':checked').val();
             if(val == 'true')
             {
                 val = true;
@@ -67,10 +67,12 @@ var UIPrompts = jClass({
             if(area.attr('id'))
                 id = id + '_'+area.attr('id');
             var e = $('<input />');
-            e.attr('type','radio');
-            e.attr('name','radio');
-            e.attr('value',setting.val);
-            e.attr('id',id);
+            e.attr({
+                'type':'radio',
+                'name':'radio',
+                'value':setting.val,
+                'id':id
+            });
             area.append(e);
             var label = $('<label />');
             label.attr('for',id);
@@ -82,11 +84,8 @@ var UIPrompts = jClass({
 
     textPrompt: function (area,data)
     {
-        var e = $('<input type="text" />');
-        e.css({maxWidth:'100%', minWidth: '50%'});
         area.append(data.prompt);
-        area.append('&nbsp;');
-        area.append(e);
+        area.append('&nbsp;<input type="text" style="max-width: 100%; min-width:50%;" />');
     },
 
     datePrompt: function (area,data)
@@ -114,26 +113,25 @@ var UIPrompts = jClass({
 
         data = $.extend({ hour: 7, minute: 0}, data);
 
-        var h = $('<select name="hour" id="hour"/>');
+        var h = '<select name="hour" id="hour" >';
         for(var i = 0; i < 24; i++)
         {
-            var opt = $('<option value="'+i+'" />');
+            h += '<option value="'+i+'" ';
             if(i == data.hour)
-                opt.attr('selected','selected');
-            opt.html(i);
-            h.append(opt);
+                h += 'selected="selected" ';
+            h += '>'+i+'</option>';
         }
-        area.append(h);
-        var m = $('<select name="minute" id="minute" />');
+        h += '</select>';
+        h += '<select name="minute" id="minute">';
         $.each(['00','15','30','45'],function (e,i)
         {
-            var opt = $('<option value="'+i+'" />');
+            h += '<option value="'+i+'"';
             if(e == data.minute)
-                opt.attr('selected','selected');
-            opt.html(i);
-            m.append(opt);
+                h += ' selected="selected"';
+            h += ' >'+i+'</option>';
         });
-        area.append(m);
+        h += '</select>';
+        area.append(h);
     }
 });
 
@@ -165,22 +163,22 @@ var wizard = jClass.extend(UIPrompts,{
         this._container = $('<div/>').appendTo(this.parent).addClass('wizardContainer');
     },
 
+    // FIXME: Refactor the area so that the prompt content, title, and continue buttons
+    //          are all separate
     newStep: function (data)
     {
         var c = this._container;
         c.empty();
         var info = $('<div/>');
-        var title = $('<b/>').html(data.title);
-        info.append(title);
-        info.append('<hr/>');
+        var title = '<b>'+data.title+'</b>';
+        var iContent = '<b>'+data.title+'</b><hr />';
         if(data.information != '')
         {
-            var infoText = $('<div/>');
-            infoText.html(data.information);
-            infoText.append('<br /><br />');
-            info.append(infoText);
+            iContent += '<div>'+data.information+'</div><br /><br /></div>';
         }
+
         var buildPart = $('<div/>');
+        info.html(iContent);
         info.append(buildPart);
         c.append(info);
         info.append('<br />');
@@ -195,6 +193,7 @@ var wizard = jClass.extend(UIPrompts,{
         warningArea.hide();
         info.append(warningArea);
 
+        // FIXME: There is little point in regenerating this button on every single step
         var button = $('<div/>').html(label).button().click(function ()
         {
             if (_self.saveCurrent() == false)
@@ -352,11 +351,11 @@ var UI = jClass({
     {
         var self = this;
         var tabDiv = $('<div />');
-        var tabBar = $('<ul />').append('<li><a href="#addEntry">'+_('Add entry')+'</a></li>')
-                                .append('<li><a href="#viewEntries">'+_('View entries')+'</a></li>');
+        var tabBar = $('<ul />').append('<li><a href="#addEntry">'+_('Add entry')+'</a></li>'+
+                                        '<li><a href="#viewEntries">'+_('View entries')+'</a></li>');
         tabDiv.append(tabBar);
-        tabDiv.append('<div id="addEntry"></div>');
-        tabDiv.append('<div id="viewEntries">View entries tab</div>');
+        tabDiv.append('<div id="addEntry"></div>'+
+                      '<div id="viewEntries">View entries tab</div>');
         $('body').append(tabDiv);
         tabDiv.tabs({
             show: function (event,UI)
@@ -667,14 +666,17 @@ var UI = jClass({
         var tab = $('#viewEntries').empty();
         var table = $('<table id="dataList"></table>').appendTo(tab);
         var topRow = $('<tr></tr>').appendTo(table);
+        var headers = '';
         $.each(headOrder, function (i, val)
         {
-            $('<th>'+headMap[val].label+'</th>').appendTo(topRow);
+            headers += '<th>'+headMap[val].label+'</th>';
         });
-        $('<th>&nbsp;</th>').appendTo(topRow);
+        headers += '<th>&nbsp;</th>';
+        topRow.append(headers);
         $.each(diary.data.savedData, function (int,entry)
         {
             var row = $('<tr value="'+int+'"></tr>').appendTo(table);
+            var content = '';
             $.each(headOrder, function (i, val)
             {
                 var $td = $('<td />');
