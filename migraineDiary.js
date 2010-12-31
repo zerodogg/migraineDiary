@@ -18,10 +18,18 @@
 
 var diary;
 
-jQuery.browser.isMobile = function ()
+// Simplistic 'mobile browser' detection
+jQuery.browser.isMobile = navigator.userAgent.match(/(Opera (Mi|Mo)|Android|Mobile)/);
+
+/* Display an error message to the unfortunate users of these browsers.
+ * Needs to be executed here to avoid syntax "errors" later on */
+if(!$.browser.isMobile && $.browser.msie && parseInt($.browser.version) < 8)
 {
-    return navigator.userAgent.match(/(Opera (Mi|Mo)|Android|Mobile)/);
-};
+    $('body').empty();
+    $('body').html('You are running an ancient version of MSIE that does not work with the migraine diary.<br />We recommend that you upgrade to <a href="http://www.getfirefox.com/">Firefox</a>');
+    $.browser.broken = true;
+}
+
 
 var UIPrompts = jClass({
     getPromptValue: function (type,search)
@@ -338,7 +346,7 @@ var UI = jClass({
 
     _constructor: function (saveFunc)
     {
-        if($.browser.isMobile())
+        if($.browser.isMobile)
             $('body').addClass('mobile');
         this.buildUI(saveFunc);
     },
@@ -929,7 +937,7 @@ var UI = jClass({
     quickDialog: function (text)
     {
         var buttons = {};
-        buttons[_('Ok')] = function () { $(this).dialog('close') };
+        buttons[_('Ok')] = function () { $(this).dialog('close'); };
         $('<div/>').html(text).dialog({ buttons: buttons});
     }
 });
@@ -953,6 +961,12 @@ var migraineDiary = jClass({
     runUI: function ()
     {
         var self = this;
+        if($.browser.msie && parseInt($.browser.version) < 8)
+        {
+            $('body').empty();
+            $('body').html('You are running an ancient version of MSIE that does not work with the migraine diary.<br />We recommend that you upgrade to <a href="http://www.getfirefox.com/">Firefox</a>');
+            return;
+        }
         this.UI = new UI(function (wizard)
         {
             self.appendData(wizard.data);
@@ -1003,6 +1017,10 @@ var migraineDiary = jClass({
 
 $(function ()
 {
+    if($.browser.broken)
+    {
+        return;
+    }
     $('title').text(_('Migraine Diary')+' beta');
     diary = new migraineDiary();
     diary.runUI();
