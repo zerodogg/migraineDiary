@@ -20,6 +20,17 @@ var diary;
 
 // Simplistic 'mobile browser' detection
 jQuery.browser.isMobile = navigator.userAgent.match(/(Opera (Mi|Mo)|Android|Mobile)/);
+// Dialog wrapper ensuring proper placement on mobile platforms
+jQuery.fn.mDialog = function(args)
+{
+    if(jQuery.browser.isMobile && jQuery.isPlainObject(args))
+    {
+        $.extend(args,{
+            position: ['left','top' ]
+        });
+    }
+    this.dialog(args);
+};
 
 /* Display an error message to the unfortunate users of these browsers.
  * Needs to be executed here to avoid syntax "errors" later on */
@@ -697,7 +708,7 @@ var UI = jClass({
                 var $dialog = $('<div />').appendTo('body');
                 var close = function ()
                 {
-                    $dialog.dialog('close');
+                    $dialog.mDialog('close');
                     $dialog.remove();
                 };
                 var buttons = {};
@@ -710,7 +721,7 @@ var UI = jClass({
                 };
                 buttons[_('No')] = close;
                 $dialog.html(_('Are you sure you want to <b>permanently</b> delete this entry?'));
-                $dialog.dialog({
+                $dialog.mDialog({
                     close: false,
                     buttons: buttons
                 });
@@ -806,7 +817,7 @@ var UI = jClass({
         buttons[_('Save change')] = function ()
         {
             var value = self.prompts.getPromptValue(data.type,$d);
-            $d.dialog('close');
+            $d.mDialog('close');
             $d.empty();
             if(data.type == 'date')
             {
@@ -831,7 +842,7 @@ var UI = jClass({
             dialogSettings.minHeight = info.minHeight;
         if(info.minWidth)
             dialogSettings.minWidth = info.minWidth;
-        $d.dialog(dialogSettings);
+        $d.mDialog(dialogSettings);
     },
 
     renderEntry: function(entry,data)
@@ -926,8 +937,8 @@ var UI = jClass({
         info.push('Hosted at: '+document.domain);
 
         var buttons = {};
-        buttons[_('Ok')] = function () { $(this).dialog('close'); };
-        $('<div/>').html(info.join('<br />')).dialog({
+        buttons[_('Ok')] = function () { $(this).mDialog('close'); };
+        $('<div/>').html(info.join('<br />')).mDialog({
             buttons: buttons,
             minWidth: '400',
             title: 'migraineDiary debug dialog'
@@ -937,8 +948,8 @@ var UI = jClass({
     quickDialog: function (text)
     {
         var buttons = {};
-        buttons[_('Ok')] = function () { $(this).dialog('close'); };
-        $('<div/>').html(text).dialog({ buttons: buttons});
+        buttons[_('Ok')] = function () { $(this).mDialog('close'); };
+        $('<div/>').html(text).mDialog({ buttons: buttons});
     }
 });
 

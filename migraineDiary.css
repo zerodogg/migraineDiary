@@ -65,6 +65,10 @@ hr
  * Mobile browsers will be detected by js, and body will have the
  * class mobile added to it
  */
+.mobile
+{
+	max-width: 400px;
+}
 .mobile #wizardContinueButton
 {
 	float:none;
