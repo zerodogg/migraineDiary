@@ -5,4 +5,5 @@ libs/jquery.json-2.2.min.js
 libs/jstorage.min.js
 libs/jquery-hotkeys.js
 libs/libs-bundle.js
+libs/LAB.js
 po/*.json

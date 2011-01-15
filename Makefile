@@ -1,6 +1,7 @@
 simpleJSi18nPath=../simpleJSi18n
 
 downloadLibs:
+	wget --no-check-certificate -O libs/LAB.js https://github.com/getify/LABjs/raw/master/LAB.min.js
 	wget --no-check-certificate -O libs/jquery.json-2.2.min.js http://jquery-json.googlecode.com/files/jquery.json-2.2.min.js
 	wget --no-check-certificate -O libs/jstorage.min.js http://github.com/andris9/jStorage/raw/master/jstorage.min.js
 	wget --no-check-certificate -O libs/jquery-hotkeys.js http://js-hotkeys.googlecode.com/files/jquery.hotkeys-0.7.9.min.js
