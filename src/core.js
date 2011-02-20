@@ -16,147 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var diary;
-
-// Simplistic 'mobile browser' detection
-jQuery.browser.isMobile = navigator.userAgent.match(/(Opera (Mi|Mo)|Android|Mobile)/);
-// Dialog wrapper ensuring proper placement on mobile platforms
-jQuery.fn.mDialog = function(args)
-{
-    if(jQuery.browser.isMobile && jQuery.isPlainObject(args))
-    {
-        $.extend(args,{
-            position: ['left','top' ]
-        });
-    }
-    this.dialog(args);
-};
-
-/* Display an error message to the unfortunate users of these browsers.
- * Needs to be executed here to avoid syntax "errors" later on */
-if(!$.browser.isMobile && $.browser.msie && parseInt($.browser.version) < 8)
-{
-    $('body').empty();
-    $('body').html('You are running an ancient version of MSIE that does not work with the migraine diary.<br />We recommend that you upgrade to <a href="http://www.getfirefox.com/">Firefox</a>');
-    $.browser.broken = true;
-}
-
-
-var UIPrompts = jClass({
-    getPromptValue: function (type,search)
-    {
-        var val = null;
-        if(type == 'selector')
-        {
-            val = search.find(':checked').val();
-            if(val == 'true')
-            {
-                val = true;
-            }
-            else if(val == 'false')
-            {
-                val = false;
-            }
-        }
-        else if(type == 'text')
-        {
-            val = search.find('input').val();
-        }
-        else if(type == 'time')
-        {
-            val = search.find('#hour').val()+':'+search.find('#minute').val();
-        }
-        else if(type == 'date')
-        {
-            val = $('#datePromptEntity').datepicker('getDate');
-        }
-        else
-        {
-            console.log('getPromptValue() got invalid type='+type);
-        }
-        return val;
-    },
-
-    selectorPrompt: function (area,data)
-    {
-        $.each(data.selections, function (int,setting)
-        {
-
-            var id = 'selectorPrompt_'+setting.val;
-            if(area.attr('id'))
-                id = id + '_'+area.attr('id');
-            var e = $('<input />');
-            e.attr({
-                'type':'radio',
-                'name':'radio',
-                'value':setting.val,
-                'id':id
-            });
-            area.append(e);
-            var label = $('<label />');
-            label.attr('for',id);
-            label.html(setting.label);
-            area.append(label);
-            area.append('<br />');
-        });
-    },
-
-    textPrompt: function (area,data)
-    {
-        area.append(data.prompt);
-        area.append('&nbsp;<input type="text" style="max-width: 100%; min-width:50%;" />');
-    },
-
-    datePrompt: function (area,data)
-    {
-        area.append(data.prompt);
-        area.append('&nbsp;');
-        $('<div />').attr('id','datePromptEntity').appendTo(area);
-        $('#datePromptEntity').datepicker({
-            // UI uses the international date format, but this isn't displayed,
-            // and this will get us a parseable date.
-            dateFormat: 'mm-dd-yyyy',
-            dayNames: [_('Sunday'),_('Monday'),_('Tuesday'),_('Wednesday'),_('Thursday'),_('Friday'),_('Saturday')],
-            dayNamesMin: [_('Su'),_('Mo'),_('Tu'),_('We'),_('Th'),_('Fr'),_('Sa')]
-        });
-        if(data.defaultDate)
-        {
-            $('#datePromptEntity').datepicker('setDate',data.defaultDate);
-        }
-    },
-
-    timePrompt: function (area,data)
-    {
-        area.append(data.prompt);
-        area.append('&nbsp;');
-
-        data = $.extend({ hour: 7, minute: 0}, data);
-
-        var h = '<select name="hour" id="hour" >';
-        for(var i = 0; i < 24; i++)
-        {
-            h += '<option value="'+i+'" ';
-            if(i == data.hour)
-                h += 'selected="selected" ';
-            h += '>'+i+'</option>';
-        }
-        h += '</select>';
-        h += '<select name="minute" id="minute">';
-        $.each(['00','15','30','45'],function (e,i)
-        {
-            h += '<option value="'+i+'"';
-            if(e == data.minute)
-                h += ' selected="selected"';
-            h += ' >'+i+'</option>';
-        });
-        h += '</select>';
-        area.append(h);
-    }
-});
-
-var wizard = jClass.extend(UIPrompts,{
+var wizard = jClass({
 
     steps: [],
+
+    runSteps: [],
 
     data: {},
 
@@ -167,39 +31,33 @@ var wizard = jClass.extend(UIPrompts,{
 
     onDoneRun: null,
 
-    parent: null,
 
-    _constructor: function (steps,onDone,parent)
+    _constructor: function (steps,onDone)
     {
         this.steps = steps;
         this.onDoneRun = onDone;
-        this.parent = parent;
         this.prepContainer();
     },
 
     prepContainer: function ()
     {
-        this._container = $('<div/>').appendTo(this.parent).addClass('wizardContainer');
     },
 
     // FIXME: Refactor the area so that the prompt content, title, and continue buttons
     //          are all separate
     newStep: function (data)
     {
-        var c = this._container;
-        c.empty();
         var info = $('<div/>');
-        var title = '<b>'+data.title+'</b>';
-        var iContent = '<b>'+data.title+'</b><hr />';
+        var title = '<b class="text">'+data.title+'</b>';
+        var iContent = '<b class="text">'+data.title+'</b><hr />';
         if(data.information != '')
         {
-            iContent += '<div>'+data.information+'</div><br /><br /></div>';
+            iContent += '<div class="text">'+data.information+'</div><br /><br /></div>';
         }
 
         var buildPart = $('<div/>');
         info.html(iContent);
         info.append(buildPart);
-        c.append(info);
         info.append('<br />');
 
         var _self = this;
@@ -213,7 +71,7 @@ var wizard = jClass.extend(UIPrompts,{
         info.append(warningArea);
 
         // FIXME: There is little point in regenerating this button on every single step
-        var button = $('<div/>').html(label).button().click(function ()
+        var fwdButton = $('<div/>').html(label).button().click(function ()
         {
             if (_self.saveCurrent() == false)
             {
@@ -228,10 +86,20 @@ var wizard = jClass.extend(UIPrompts,{
             }
             _self.nextStep();
         });
-        button.attr('id','wizardContinueButton');
+        fwdButton.attr('id','wizardContinueButton');
+        info.append(fwdButton);
 
-        info.append(button);
+        if(this.currStep > 0)
+        {
+            var backButton = $('<div/>').html(_('Back')).button().click(function()
+            {
+                _self.back();
+            }).attr('id','wizardBackButton');
+
+            info.append(backButton);
+        }
         info.append('<div style="clear:both;" />');
+        UIWidgets.mainArea.transitionContent(info);
 
         return buildPart;
     },
@@ -264,6 +132,7 @@ var wizard = jClass.extend(UIPrompts,{
         {
             this.timePrompt(area,d);
         }
+        this.runSteps.unshift(step);
     },
 
     runNamedStep: function (name)
@@ -314,7 +183,7 @@ var wizard = jClass.extend(UIPrompts,{
     getStepValue: function ()
     {
         var type = this.currType,
-            search = this._container;
+            search = UIWidgets.mainArea.area;
         return this.getPromptValue(type,search);
     },
 
@@ -332,9 +201,129 @@ var wizard = jClass.extend(UIPrompts,{
 
     done: function ()
     {
-        this._container.empty();
+        UIWidgets.mainArea.setContent('');
         if(this.onDoneRun)
             this.onDoneRun.call(null,this);
+    },
+
+    getPromptValue: function (type,search)
+    {
+        var val = null;
+        if(type == 'selector')
+        {
+            val = search.find(':checked').val();
+            if(val == 'true')
+            {
+                val = true;
+            }
+            else if(val == 'false')
+            {
+                val = false;
+            }
+        }
+        else if(type == 'text')
+        {
+            val = search.find('input').val();
+        }
+        else if(type == 'time')
+        {
+            val = search.find('#hour').val()+':'+search.find('#minute').val();
+        }
+        else if(type == 'date')
+        {
+            val = $('#datePromptEntity').datepicker('getDate');
+        }
+        else
+        {
+            console.log('getPromptValue() got invalid type='+type);
+        }
+        return val;
+    },
+
+    selectorPrompt: function (area,data)
+    {
+        $.each(data.selections, function (int,setting)
+        {
+
+            var id = 'selectorPrompt_'+setting.val;
+            if(area.attr('id'))
+                id = id + '_'+area.attr('id');
+            var html = '<input type="radio" name="radio" value="'+setting.val+'" id="'+id+'" /><label for="'+id+'">'+setting.label+'</label>';
+            area.append(html);
+            area.append('<br />');
+        });
+        area.find('[type=radio]').change(function()
+        {
+            $('#wizardContinueButton').click();
+        });
+    },
+
+    textPrompt: function (area,data)
+    {
+        area.append(data.prompt);
+        area.append('&nbsp;<input type="text" style="max-width: 100%; min-width:50%;" />');
+    },
+
+    datePrompt: function (area,data)
+    {
+        area.append(data.prompt);
+        area.append('&nbsp;');
+        $('<div />').attr('id','datePromptEntity').appendTo(area);
+        $('#datePromptEntity').datepicker({
+            // UI uses the international date format, but this isn't displayed,
+            // and this will get us a parseable date.
+            dateFormat: 'mm-dd-yyyy',
+            dayNames: [_('Sunday'),_('Monday'),_('Tuesday'),_('Wednesday'),_('Thursday'),_('Friday'),_('Saturday')],
+            dayNamesMin: [_('Su'),_('Mo'),_('Tu'),_('We'),_('Th'),_('Fr'),_('Sa')]
+        });
+        if(data.defaultDate)
+        {
+            $('#datePromptEntity').datepicker('setDate',data.defaultDate);
+        }
+    },
+
+    timePrompt: function (area,data)
+    {
+        area.append(data.prompt);
+        if($.browser.isNativeMobile)
+        {
+            area.append('<br />');
+        }
+        else
+        {
+            area.append('&nbsp;');
+        }
+
+        data = $.extend({ hour: 7, minute: 0}, data);
+
+        var h = '<select name="hour" id="hour" >';
+        for(var i = 0; i < 24; i++)
+        {
+            h += '<option value="'+i+'" ';
+            if(i == data.hour)
+                h += 'selected="selected" ';
+            h += '>'+i+'</option>';
+        }
+        h += '</select>';
+        h += '<select name="minute" id="minute">';
+        $.each(['00','15','30','45'],function (e,i)
+        {
+            h += '<option value="'+i+'"';
+            if(e == data.minute)
+                h += ' selected="selected"';
+            h += ' >'+i+'</option>';
+        });
+        h += '</select>';
+        area.append(h);
+    },
+
+    back: function()
+    {
+        if(this.runSteps.length > 1)
+        {
+            this.runSteps.shift();
+            this.runStep(this.runSteps.shift() );
+        }
     }
 
 });
@@ -349,17 +338,20 @@ var widgets = {
     }
 };
 
-var UI = jClass({
+var UI = 
+{
 
     wizardDefinition: null,
     wizard: null,
     prompts: null,
+    saveFunc: null,
 
-    _constructor: function (saveFunc)
+    init: function (saveFunc)
     {
         if($.browser.isMobile)
             $('body').addClass('mobile');
         this.buildUI(saveFunc);
+        this.saveFunc = saveFunc;
     },
 
     /*
@@ -368,27 +360,12 @@ var UI = jClass({
 
     buildUI: function (saveFunc)
     {
-        var self = this;
-        var tabDiv = $('<div />');
-        var tabBar = $('<ul />').append('<li><a href="#addEntry">'+_('Add entry')+'</a></li>'+
-                                        '<li><a href="#viewEntries">'+_('View entries')+'</a></li>');
-        tabDiv.append(tabBar);
-        tabDiv.append('<div id="addEntry"></div>'+
-                      '<div id="viewEntries">View entries tab</div>');
-        $('body').append(tabDiv);
-        tabDiv.tabs({
-            show: function (event,UI)
-            {
-                if(UI.index == 1)
-                    self.buildViewTAB();
-            }
-        });
-
-        this.buildWizard(saveFunc,$('#addEntry'));
-        $(document).bind('keydown', 'ctrl+b', function () { self.showDebugDialog(); });
+        UIWidgets.tabBar(this);
+        this.buildWizard(saveFunc);
+        $(document).bind('keydown', 'ctrl+b', function () { UI.showDebugDialog(); });
     },
 
-    buildWizard: function (saveFunc, parent)
+    buildWizard: function (saveFunc)
     {
         var wizardDefinition =  [
             {
@@ -597,15 +574,11 @@ var UI = jClass({
             });
         }
         this.wizardDefinition = wizardDefinition;
-        var myWizard = new wizard(wizardDefinition,saveFunc,parent);
+        var myWizard = new wizard(wizardDefinition,saveFunc);
         window.wiz = myWizard;
 
         myWizard.run();
 
-        // We set this.prompts to the wizard as well, as the wizard
-        // extends UIPrompts, and thus it makes little sense to instantiate
-        // a second one, merely for the sake of using methods already available
-        // via .wizard
         this.prompts = this.wizard = myWizard;
     },
 
@@ -931,10 +904,26 @@ var UI = jClass({
         var info = [];
         info.push('migraineDiary version '+diary.version);
         info.push('Data version: '+diary.data.dataVersion);
-        info.push('User agent: '+navigator.userAgent);
         var language = navigator.language || navigator.browserLanguage;
         info.push('Language: '+language);
-        info.push('Hosted at: '+document.domain);
+        var UALabel = 'User agent: ';
+        if($.browser.isNativeMobile)
+        {
+            if(navigator.userAgent.match(/Android/i))
+            {
+                info.push('Native Android edition');
+            }
+            else
+            {
+                info.push('Native mobile edition');
+            }
+            UALabel = 'Runtime: ';
+        }
+        else
+        {
+            info.push('Hosted at: '+document.domain);
+        }
+        info.push(UALabel+navigator.userAgent);
 
         var buttons = {};
         buttons[_('Ok')] = function () { $(this).mDialog('close'); };
@@ -945,15 +934,31 @@ var UI = jClass({
         });
     },
 
-    quickDialog: function (text)
+    showAboutDialog: function()
     {
-        var buttons = {};
-        buttons[_('Ok')] = function () { $(this).mDialog('close'); };
-        $('<div/>').html(text).mDialog({ buttons: buttons});
-    }
-});
+        var text = __('migraineDiary version %(VERSION)', { VERSION: diary.version } ) + '<br />' +
+                   _('by Eskild Hustvedt') + ' <a href="http://www.zerodogg.org/" rel="external">http://www.zerodogg.org/</a><br /><br />'+
+                   _('If you find migraineDiary useful, you\'re encouraged (but not required) you to make a donation to help fund its development (any amount at all, big or small)');
+        UI.quickDialog(text, _('Close'), _('About migraineDiary'));
+    },
 
-var migraineDiary = jClass({
+    quickDialog: function (text,okLabel,title)
+    {
+        if(okLabel == null)
+            okLabel = _('Ok');
+        var buttons = {};
+        buttons[okLabel] = function () { $(this).mDialog('close'); };
+        var params = {
+            'buttons': buttons
+        };
+        if(title)
+            params.title = title;
+        $('<div/>').html(text).mDialog(params);
+    }
+};
+
+var migraineDiary =
+{
     UI: null,
 
     version: '0.1',
@@ -964,9 +969,10 @@ var migraineDiary = jClass({
         savedData:[]
     },
 
-    _constructor: function ()
+    init: function()
     {
         this.loadData();
+        this.runUI();
     },
 
     runUI: function ()
@@ -978,17 +984,25 @@ var migraineDiary = jClass({
             $('body').html('You are running an ancient version of MSIE that does not work with the migraine diary.<br />We recommend that you upgrade to <a href="http://www.getfirefox.com/">Firefox</a>');
             return;
         }
-        this.UI = new UI(function (wizard)
+        UI.init(function (wizard)
         {
             self.appendData(wizard.data);
             self.saveData();
-            $('#addEntry').html(_('Done, data saved (locally in your browser).')+' <a href="#" id="learnMoreLocalStorage">'+_('Learn more about storage')+'.</a>');
-            $('#learnMoreLocalStorage').click(function (e)
+            if($.browser.isNativeMobile)
             {
-                e.preventDefault();
-                self.UI.quickDialog(_('All data saved by the Migraine Diary is saved locally in your browser. No data is sent to the server. This storage is permanent accross browser sessions, but if you explicitly delete "local storage" data from your browser, it will be permanently lost.'));
-                return false;
-            });
+                $('#viewEntriesButton').click();
+                UI.buildWizard(UI.saveFunc);
+            }
+            else
+            {
+                $('#addEntry').html(_('Done, data saved (locally in your browser).')+' <a href="#" id="learnMoreLocalStorage">'+_('Learn more about storage')+'.</a>');
+                $('#learnMoreLocalStorage').click(function (e)
+                {
+                    e.preventDefault();
+                    UI.quickDialog(_('All data saved by the Migraine Diary is saved locally in your browser. No data is sent to the server. This storage is permanent accross browser sessions, but if you explicitly delete "local storage" data from your browser, it will be permanently lost.'));
+                    return false;
+                });
+            }
         });
     },
 
@@ -1021,10 +1035,10 @@ var migraineDiary = jClass({
             if(err == null)
                 err = e;
             //var buttons = {};
-            this.UI.quickDialog(_('A fatal error occurred while saving the data. Your data has probably not been saved.')+'<br /><br />Error:'+err);
+            UI.quickDialog(_('A fatal error occurred while saving the data. Your data has probably not been saved.')+'<br /><br />Error:'+err);
         }
     }
-});
+};
 
 $(function ()
 {
@@ -1033,6 +1047,6 @@ $(function ()
         return;
     }
     $('title').text(_('Migraine Diary')+' beta');
-    diary = new migraineDiary();
-    diary.runUI();
+    window.diary = migraineDiary;
+    migraineDiary.init();
 });

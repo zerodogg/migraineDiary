@@ -20,14 +20,18 @@ hr
 	border: 0;
 	background-color: #D3D7CF;
 } 
-#wizardContinueButton
+#wizardContinueButton, #wizardBackButton
 {
 	float:right;
+}
+#wizardBackButton
+{
+	margin-right: 5px;
 }
 
 .wizardContainer
 {
-	width:600px;
+	width:400px;
 }
 #datePromptEntity .ui-widget-content
 {
@@ -67,13 +71,49 @@ hr
  */
 .mobile
 {
-	max-width: 400px;
+	margin: 0px;
 }
 .mobile #wizardContinueButton
 {
 	float:none;
 }
+.mobileS #wizardContinueButton
+{
+	float:right;
+}
+.mobileS
+{
+	overflow: hide;
+}
 .mobile .wizardContainer
 {
 	width:100% !important;
+}
+.tabBar
+{
+	width: 100%;
+	background-color: #444;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	margin-bottom: 6px;
+}
+.tabBar div
+{
+	margin-left: 2px;
+}
+.mobile, .mobile .ui-widget-content, .mobile .ui-dialog-content, .mobile .ui-dialog
+{
+	font-size: 10pt;
+}
+.mobile .text
+{
+	padding-left: 4px;
+}
+.mobileS #viewEntries tr th
+{
+	background-color: #444;
+}
+.mobileS #viewEntries tr
+{
+	background-color: #111;
 }
