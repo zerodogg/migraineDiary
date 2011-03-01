@@ -1,72 +1,125 @@
-var UIWidgets = {
-    tabBar: function(self)
-    {
-        var tabDiv = $('.tabBar');
-        var add = $('<div id="addEntryButton" />').css({'font-size':'10pt'}).html(_('Add entry')).button().appendTo(tabDiv);
-        var view = $('<div id="viewEntriesButton" />').css({'font-size':'10pt','font-weight':'normal'}).html(_('View entries')).button().appendTo(tabDiv);
-        add.click(function()
-        {
-            $('.tabBar').css({
-                'width':'100%',
-                'border-bottom-right-radius':'0px'
-            });
-            $('#addEntry').show();
-            $('#viewEntries').hide();
-            view.css({'font-weight':'normal'});
-            add.css({'font-weight':'bold'});
-        });
-        view.click(function()
-        {
-            $('#addEntry').hide();
-            $('#viewEntries').show();
-            view.css({'font-weight':'bold'});
-            add.css({'font-weight':'normal'});
-            self.buildViewTAB();
-            var width = $('table').outerWidth();
-            if($('body').width() > width)
-            {
-                width = $('body').width();
-            }
-            $('.tabBar').css({
-                'width': width +'px',
-            });
-        });
-    },
-
-    mainArea:
-    {
-        area: null,
-
-        init: function()
-        {
-            if(this.area == null)
-                this.area = $('<div/>').appendTo($('#addEntry')).addClass('wizardContainer');
-        },
-
-        setContent: function(cont)
-        {
-            this.init();
-            return this.area.html(cont);
-        },
-
-        transitionContent: function(cont)
-        {
-            this.init();
-            return this.setContent(cont);
-        }
-    }
-};
-
 (function($)
 {
-    var wasVisible;
+    var tabDiv, add, view, aboutButton, h, w;
+
+    window.UIWidgets = {
+        tabBar: function(self)
+        {
+            add = $('#addEntry');
+            view = $('#viewEntries');
+            tabDiv = $('.tabBar');
+
+            var addButton = $('<div id="addEntryButton" />').html(_('Add entry')).button().appendTo(tabDiv);
+            var viewButton  = $('<div id="viewEntriesButton" />').css({'font-weight':'normal'}).html(_('View entries')).button().appendTo(tabDiv);
+            aboutButton = $('<div id="aboutButton" />').css({'font-weight':'normal', 'float':'right'}).html(_('About')).button().appendTo(tabDiv).hide();
+
+            addButton.mClick(function()
+            {
+                UIWidgets.tabBarState('normal');
+                add.show();
+                view.hide();
+                viewButton.css({'font-weight':'normal'});
+                addButton.css({'font-weight':'bold'});
+            });
+            viewButton.mClick(function()
+            {
+                add.hide();
+                view.show();
+                viewButton.css({'font-weight':'bold'});
+                addButton.css({'font-weight':'normal'});
+                self.buildViewTAB();
+                UIWidgets.tabBarState('extended');
+            });
+            aboutButton.mClick(function()
+            {
+                UI.showAboutDialog();
+            });
+
+            $(window).resize(function()
+            {
+                UIWidgets.tabBarState(UIWidgets.getTabBarState());
+            });
+        },
+
+        tabBarState: function(state)
+        {
+            if(state == 'normal')
+            {
+                $('.tabBar').css({
+                    'width':'100%',
+                    'border-bottom-right-radius':'0px'
+                });
+                aboutButton.hide();
+            }
+            else if(state == 'extended')
+            {
+                var width = $('table').outerWidth();
+                if($('body').width() > width)
+                {
+                    width = $('body').width();
+                }
+                $('.tabBar').css({
+                    'width': width +'px',
+                });
+                aboutButton.show();
+            }
+            else if(state == 'prev')
+            {
+                return UIWidgets.tabBarState(prevTabBarState);
+            }
+        },
+
+        getTabBarState: function()
+        {
+            if(aboutButton.is(':visible'))
+            {
+                return 'extended';
+            }
+            return 'normal';
+        },
+
+        mainArea:
+        {
+            area: null,
+
+            init: function()
+            {
+                if(this.area == null)
+                    this.area = $('<div />').appendTo(add).addClass('wizardContainer');
+            },
+
+            setContent: function(cont)
+            {
+                this.init();
+                return this.area.html(cont);
+            },
+
+            transitionContent: function(cont)
+            {
+                this.init();
+                return this.setContent(cont);
+            }
+        }
+    };
+
+    var wasVisible, prevTabBarState;
     // Separate dialog implementation that fits the small screens better
     jQuery.fn.mDialog = function(args)
     {
         if( (args && $.isPlainObject(args)) || (args == null))
         {
-            wasVisible = $(':visible').find('#addEntry, #viewEntries');
+            if(add.is(':visible'))
+            {
+                wasVisible = add;
+            }
+            else if(view.is(':visible'))
+            {
+                wasVisible = view;
+            }
             wasVisible.hide();
+            prevTabBarState = UIWidgets.getTabBarState();
+            UIWidgets.tabBarState('normal');
+
             $('.ui-button').button("option", "disabled", true);
             var self = this;
             if(args != null)
@@ -82,11 +135,18 @@ var UIWidgets = {
                     {
                         css['margin-right'] = '6px';
                     }
-                    var button = $('<div/>').html(k).button().click(v).appendTo(buttons).css(css);;
+                    if($.isFunction(v))
+                    {
+                        var button = $('<div/>').html(k).button().mClick(v).appendTo(buttons).css(css);;
+                    }
+                    else
+                    {
+                        var button = $('<a/>').attr('rel','external').attr('href',v).html(k).button().appendTo(buttons).css(css);
+                    }
                     no = no +1;
                 });
             }
-            this.appendTo('body').show().addClass('isDialog');;
+            self.appendTo('body').show().addClass('isDialog');
         }
         else
         {
@@ -102,8 +162,54 @@ var UIWidgets = {
                 {
                     this.remove();
                 }
+                UIWidgets.tabBarState(prevTabBarState);
             }
         }
+        return this;
     };
+
+    jQuery.fn.mClick = function(action)
+    {
+        if(action)
+        {
+            this.mousedown(function(e)
+            {
+                if($(this).button('option','disabled') !== true)
+                {
+                    try
+                    {
+                        action.call(this,e);
+                    } catch(e)
+                    {
+                    }
+                }
+                else
+                {
+                }
+            });
+            return this;
+        }
+        else
+        {
+            return this.mousedown();
+        }
+    };
+
+    /*
+     * Size initialization
+     */
+    w = $(window).width();
+    h = $(window).height();
+    if(w >= 800 || h >= 800)
+    {
+        $('body').addClass('hdpi');
+    }
+    else if(w > 450 || h > 450)
+    {
+        $('body').addClass('mdpi');
+    }
+    else
+    {
+        $('body').addClass('ldpi');
+    }
 })(jQuery);
-jQuery.browser.isNativeMobile = true;

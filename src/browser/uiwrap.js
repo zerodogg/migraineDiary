@@ -51,3 +51,4 @@ jQuery.fn.mDialog = function(args)
     }
     this.dialog(args);
 };
+jQuery.fn.mClick = jQuery.fn.click;

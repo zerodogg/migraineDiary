@@ -22,7 +22,7 @@ downloadLibs:
 	wget --no-check-certificate -O libs/jstorage.min.js http://github.com/andris9/jStorage/raw/master/jstorage.min.js
 	wget --no-check-certificate -O libs/jquery-hotkeys.js http://js-hotkeys.googlecode.com/files/jquery.hotkeys-0.7.9.min.js
 	wget --no-check-certificate -O libs/jquery.js http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js
-	wget --no-check-certificate -O libs/jquery-ui.js http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js
+	[ -e libs/jquery-ui.js ] || wget --no-check-certificate -O libs/jquery-ui.js http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js
 fetchPhoneGap: PG_VERSION=0.9.4
 fetchPhoneGap:
 	mkdir -p android/libs
@@ -44,7 +44,7 @@ fetchPhoneGap:
 
 updatepo:
 	rm -f po/migraineDiary.pot
-	$(simpleJSi18nPath)/jsxgettext po/migraineDiary.pot ./migraineDiary.js
+	$(simpleJSi18nPath)/jsxgettext po/migraineDiary.pot ./src/*.js ./src/*/*.js
 	perl -pi -e 's/SOME DESCRIPTIVE TITLE/migraineDiary/g; s/YEAR THE PACKAGE.S COPYRIGHT HOLDER/2010 Eskild Hustvedt/g; s/PACKAGE VERSION/migraineDiary/g; s/PACKAGE/migraineDiary/g; s/CHARSET/UTF-8/g;' po/migraineDiary.pot
 	for po in po/*.po; do msgmerge -U "$$po" "po/migraineDiary.pot";done
 	$(simpleJSi18nPath)/jsmsgfmt ./i18n.js ./po/*.po
@@ -61,4 +61,10 @@ androidPrep: clean buildAndroidBundle build
 androidDebug: androidPrep
 	(cd android; ant debug install)
 androidBuild:
+	@if [ "`stat -c%s "libs/jquery-ui.js"`" -gt "60000" ]; then\
+		echo "You have not build a stripped down jquery-ui. Refusing to build."; \
+		echo "Download one from http://jqueryui.com/download with only:"; \
+		echo "Core,Widget,Mouse,Button,Datepicker"; \
+		exit 1; \
+	fi
 	(cd android; ant release)

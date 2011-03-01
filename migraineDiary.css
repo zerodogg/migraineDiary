@@ -101,9 +101,25 @@ hr
 {
 	margin-left: 2px;
 }
-.mobile, .mobile .ui-widget-content, .mobile .ui-dialog-content, .mobile .ui-dialog
+.ldpi .tabBar
 {
 	font-size: 10pt;
+}
+.mdpi .tabBar, .hdpi .tabBar
+{
+	font-size: 12pt;
+}
+.ldpi, .ldpi .ui-widget-content, .ldpi .ui-dialog-content, .ldpi .ui-dialog
+{
+	font-size: 10pt;
+}
+.mdpi, .mdpi .ui-widget-content, .mdpi .ui-dialog-content, .mdpi .ui-dialog
+{
+	font-size: 12pt;
+}
+.hdpi, .hdpi .ui-widget-content, .hdpi .ui-dialog-content, .hdpi .ui-dialog
+{
+	font-size: 14pt;
 }
 .mobile .text
 {

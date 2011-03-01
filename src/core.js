@@ -66,7 +66,7 @@ var wizard = jClass({
         {
             label = _('Finish');
         }
-        var warningArea = $('<div/>').css({float:'left', 'font-weight':'bold'});
+        var warningArea = $('<div/>').css({'font-weight':'bold'});
         warningArea.hide();
         info.append(warningArea);
 
@@ -254,7 +254,14 @@ var wizard = jClass({
         });
         area.find('[type=radio]').change(function()
         {
-            $('#wizardContinueButton').click();
+            if($('#wizardContinueButton').is(':visible'))
+            {
+                $('#wizardContinueButton').click();
+            }
+            else
+            {
+                $('#columnDialog').find('.ui-button').click();
+            }
         });
     },
 
@@ -904,18 +911,19 @@ var UI =
         var info = [];
         info.push('migraineDiary version '+diary.version);
         info.push('Data version: '+diary.data.dataVersion);
-        var language = navigator.language || navigator.browserLanguage;
+        var language = window._LANGUAGE || navigator.language || navigator.browserLanguage;
         info.push('Language: '+language);
         var UALabel = 'User agent: ';
         if($.browser.isNativeMobile)
         {
+            var edition = 'Native mobile edition running on ';
             if(navigator.userAgent.match(/Android/i))
             {
-                info.push('Native Android edition');
+                edition = edition + 'Android'
             }
             else
             {
-                info.push('Native mobile edition');
+                edition = edition + '(unknown platform)';
             }
             UALabel = 'Runtime: ';
         }
@@ -926,7 +934,7 @@ var UI =
         info.push(UALabel+navigator.userAgent);
 
         var buttons = {};
-        buttons[_('Ok')] = function () { $(this).mDialog('close'); };
+        buttons[_('Back')] = function () { $(this).mDialog('close'); };
         $('<div/>').html(info.join('<br />')).mDialog({
             buttons: buttons,
             minWidth: '400',
@@ -937,15 +945,36 @@ var UI =
     showAboutDialog: function()
     {
         var text = __('migraineDiary version %(VERSION)', { VERSION: diary.version } ) + '<br />' +
-                   _('by Eskild Hustvedt') + ' <a href="http://www.zerodogg.org/" rel="external">http://www.zerodogg.org/</a><br /><br />'+
-                   _('If you find migraineDiary useful, you\'re encouraged (but not required) you to make a donation to help fund its development (any amount at all, big or small)');
-        UI.quickDialog(text, _('Close'), _('About migraineDiary'));
+                   _('by Eskild Hustvedt') + '<br /><a href="http://www.zerodogg.org/" rel="external">http://www.zerodogg.org/</a><br /><br />'+
+                   _('If you find migraineDiary useful, you\'re encouraged (but not required) to make a donation to help fund its development (<i>any</i> amount at all, big or small)'),
+                   showDD, buttons, dia, unbind;
+
+        showDD = function()
+        {
+            $(document).unbind('keydown','b',showDD)
+            dia.mDialog('close');
+            UI.showDebugDialog();
+        };
+        $(document).bind('keydown', 'b', showDD);
+
+        buttons = {};
+        buttons[_('Back')] = function () {
+            dia.mDialog('close');
+            $(document).unbind('keydown','b',showDD)
+        };
+        buttons[_('Donate')] = 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HNBLQZLLE3GDU';
+
+        dia = $('<div/>').html(text).mDialog({
+            buttons: buttons,
+            minWidth: '400',
+            title: _('About migraineDiary')
+        });
     },
 
     quickDialog: function (text,okLabel,title)
     {
         if(okLabel == null)
-            okLabel = _('Ok');
+            okLabel = _('Back');
         var buttons = {};
         buttons[okLabel] = function () { $(this).mDialog('close'); };
         var params = {
@@ -1027,6 +1056,11 @@ var migraineDiary =
     {
         try
         {
+            try
+            {
+                // Sort the data before saving
+                this.data.savedData = this.data.savedData.sort(function (a,b) { return b.savedAt - a.savedAt })
+            } catch (e) { }
             $.jStorage.set(this.confKey, this.data);
         }
         catch(e)

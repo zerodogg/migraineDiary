@@ -16,4 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * Additional language detection for when browser language does
+ * not match Android/mobile locale.
+ */
+try
+{
+    if (navigator.language == 'en')
+    {
+        var language = navigator.userAgent.split('; ')[3].replace(/-.+/,'');
+        window._LANGUAGE = language;
+    }
+} catch(e){ };
+
 jQuery.browser.isMobile = true;
+jQuery.browser.isNativeMobile = true;
