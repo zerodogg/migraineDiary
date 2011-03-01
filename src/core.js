@@ -71,7 +71,7 @@ var wizard = jClass({
         info.append(warningArea);
 
         // FIXME: There is little point in regenerating this button on every single step
-        var fwdButton = $('<div/>').html(label).button().click(function ()
+        var fwdButton = $('<div/>').html(label).button().mClick(function ()
         {
             if (_self.saveCurrent() == false)
             {
@@ -91,7 +91,7 @@ var wizard = jClass({
 
         if(this.currStep > 0)
         {
-            var backButton = $('<div/>').html(_('Back')).button().click(function()
+            var backButton = $('<div/>').html(_('Back')).button().mClick(function()
             {
                 _self.back();
             }).attr('id','wizardBackButton');
@@ -256,11 +256,11 @@ var wizard = jClass({
         {
             if($('#wizardContinueButton').is(':visible'))
             {
-                $('#wizardContinueButton').click();
+                $('#wizardContinueButton').mClick();
             }
             else
             {
-                $('#columnDialog').find('.ui-button').click();
+                $('#columnDialog').find('.ui-button').mClick();
             }
         });
     },
@@ -623,7 +623,7 @@ var UI =
                 {
                     if(value == true)
                     {
-                        $col.parents('tr').find('[value=medEffect]').click();
+                        $col.parents('tr').find('[value=medEffect]').mClick();
                     }
                     else
                     {
@@ -683,7 +683,7 @@ var UI =
                 $td.html(self.renderEntry(entry[val], headMap[val]));
                 $td.appendTo(row);
             });
-            $('<td value="delete" class="nopad"><span class="ui-icon ui-icon-trash"></span></td>').appendTo(row).click(function()
+            $('<td value="delete" class="nopad"><span class="ui-icon ui-icon-trash"></span></td>').appendTo(row).mClick(function()
             {
                 var $dialog = $('<div />').appendTo('body');
                 var close = function ()
@@ -732,7 +732,7 @@ var UI =
             input.focus();
             input.select();
         };
-        $('td').click(function ()
+        $('td').mClick(function ()
         {
             self.columnEditor(this, headMap);
         });
@@ -1019,7 +1019,7 @@ var migraineDiary =
             self.saveData();
             if($.browser.isNativeMobile)
             {
-                $('#viewEntriesButton').click();
+                $('#viewEntriesButton').mClick();
                 UI.buildWizard(UI.saveFunc);
             }
             else

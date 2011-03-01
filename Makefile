@@ -68,3 +68,4 @@ androidBuild:
 		exit 1; \
 	fi
 	(cd android; ant release)
+	mv android/bin/migraineDiary-unsigned.apk .

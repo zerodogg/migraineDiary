@@ -179,9 +179,7 @@
                     try
                     {
                         action.call(this,e);
-                    } catch(e)
-                    {
-                    }
+                    } catch(e) {}
                 }
                 else
                 {
