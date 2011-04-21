@@ -1,0 +1,7 @@
+0.1.1
+- Added a debug dialog that dumps the data to the mobile version
+- CSS build fixes
+- Increased the font size on very high resolution android devices
+
+0.1
+- Initial release
