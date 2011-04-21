@@ -925,6 +925,20 @@ var UI =
             {
                 edition = edition + '(unknown platform)';
             }
+            info.push(edition);
+            var devSize = 'Device size: ';
+            $.each(['ldpi','mdpi','hdpi'], function(i,v)
+            {
+                if($('body').hasClass(v))
+                {
+                    devSize = devSize+v;
+                }
+            });
+            if(devSize == 'Device size: ')
+            {
+                devSize = devSize + '(unknown)';
+            }
+            info.push(devSize);
             UALabel = 'Runtime: ';
         }
         else
@@ -932,6 +946,7 @@ var UI =
             info.push('Hosted at: '+document.domain);
         }
         info.push(UALabel+navigator.userAgent);
+        info.push('Viewport size: '+$(window).width()+'x'+$(window).height());
 
         var buttons = {};
         buttons[_('Back')] = function () { $(this).mDialog('close'); };
@@ -942,25 +957,49 @@ var UI =
         });
     },
 
+    showDatadumpDialog: function()
+    {
+        var data = $.toJSON(migraineDiary.data);
+        var info = 'This is a dump of your raw diary data.<br /><textarea cols="50" rows="10">'+data+'</textarea>';
+        var buttons = {};
+        buttons[_('Back')] = function () { $(this).mDialog('close'); };
+        $('<div/>').html(info).mDialog({
+            buttons: buttons,
+            minWidth: '400',
+            title: 'migraineDiary data dump dialog'
+        });
+        
+    },
+
     showAboutDialog: function()
     {
         var text = __('migraineDiary version %(VERSION)', { VERSION: diary.version } ) + '<br />' +
                    _('by Eskild Hustvedt') + '<br /><a href="http://www.zerodogg.org/" rel="external">http://www.zerodogg.org/</a><br /><br />'+
                    _('If you find migraineDiary useful, you\'re encouraged (but not required) to make a donation to help fund its development (<i>any</i> amount at all, big or small)'),
-                   showDD, buttons, dia, unbind;
+                   showDD, showData, buttons, dia, unbind;
 
         showDD = function()
         {
             $(document).unbind('keydown','b',showDD)
+            $(document).unbind('keydown','d',showData)
             dia.mDialog('close');
             UI.showDebugDialog();
         };
+        showData = function()
+        {
+            $(document).unbind('keydown','b',showDD)
+            $(document).unbind('keydown','d',showData)
+            dia.mDialog('close');
+            UI.showDatadumpDialog();
+        };
         $(document).bind('keydown', 'b', showDD);
+        $(document).bind('keydown', 'd', showData);
 
         buttons = {};
         buttons[_('Back')] = function () {
             dia.mDialog('close');
             $(document).unbind('keydown','b',showDD)
+            $(document).unbind('keydown','d',showData)
         };
         buttons[_('Donate')] = 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HNBLQZLLE3GDU';
 
