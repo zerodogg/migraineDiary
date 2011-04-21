@@ -1,6 +1,6 @@
 simpleJSi18nPath=../simpleJSi18n
 
-build: buildBundle buildAndroidBundle
+build: buildBundle buildAndroidBundle buildCSS
 	cat src/browser/*.js src/core.js > migraineDiary.js
 	cat src/mobile/*.js  src/core.js > migraineDiary.android.js
 buildBundle:
@@ -15,6 +15,9 @@ buildAndroidBundle:
 		echo "/* $$f */" >> libs/libs-bundle-android.js; \
 		cat "$$f" >> libs/libs-bundle-android.js; \
 	done
+buildCSS:
+	cat css/core.css css/desktop.css > desktop.css
+	cat css/core.css css/mobile.css > mobile.css
 
 downloadLibs:
 	wget --no-check-certificate -O libs/LAB.js https://github.com/getify/LABjs/raw/master/LAB.min.js
@@ -54,7 +57,7 @@ clean:
 	rm -rf ./android/assets/www/* ./android/bin/* ./android/gen/*
 androidPrep: clean buildAndroidBundle build
 	mkdir -p android/assets/www/
-	cp -r i18n.js migraineDiary.css libs uistyle ./android/assets/www/
+	cp -r i18n.js mobile.css libs uistyle ./android/assets/www/
 	cp migraineDiary-android.html ./android/assets/www/index.html
 	cp migraineDiary.android.js ./android/assets/www/migraineDiary.js
 	perl -pi -e 's/migraineDiary.android.js/migraineDiary.js/g' ./android/assets/www/index.html
