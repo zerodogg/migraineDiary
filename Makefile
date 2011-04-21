@@ -56,8 +56,9 @@ postat:
 clean:
 	rm -rf ./android/assets/www/* ./android/bin/* ./android/gen/*
 androidPrep: clean buildAndroidBundle build
-	mkdir -p android/assets/www/
-	cp -r i18n.js mobile.css libs uistyle ./android/assets/www/
+	mkdir -p android/assets/www/libs
+	cp -r i18n.js mobile.css uistyle ./android/assets/www/
+	cp libs/libs-bundle-android.js ./android/assets/www/
 	cp migraineDiary-android.html ./android/assets/www/index.html
 	cp migraineDiary.android.js ./android/assets/www/migraineDiary.js
 	perl -pi -e 's/migraineDiary.android.js/migraineDiary.js/g' ./android/assets/www/index.html
