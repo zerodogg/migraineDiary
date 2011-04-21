@@ -1029,7 +1029,7 @@ var migraineDiary =
 {
     UI: null,
 
-    version: '0.1',
+    version: '0.1.1',
     confKey: 'org.zerodogg.migraineDiary',
 
     data: {
