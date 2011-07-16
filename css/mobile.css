@@ -1,0 +1,69 @@
+body
+{
+	margin: 0px;
+	overflow: hide;
+}
+#viewEntries table
+{
+	padding: 5px;
+}
+#wizardContinueButton
+{
+	float:none;
+}
+#wizardContinueButton
+{
+	float:right;
+}
+.wizardContainer
+{
+	width:100% !important;
+}
+.tabBar
+{
+	width: 100%;
+	background-color: #444;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	margin-bottom: 6px;
+}
+.tabBar div
+{
+	margin-left: 2px;
+}
+.ldpi .tabBar
+{
+	font-size: 10pt;
+}
+.mdpi .tabBar
+{
+	font-size: 12pt;
+}
+.hdpi .tabBar
+{
+	font-size: 14pt;
+}
+.ldpi, .ldpi .ui-widget-content, .ldpi .ui-dialog-content, .ldpi .ui-dialog
+{
+	font-size: 10pt;
+}
+.mdpi, .mdpi .ui-widget-content, .mdpi .ui-dialog-content, .mdpi .ui-dialog
+{
+	font-size: 12pt;
+}
+.hdpi, .hdpi .ui-widget-content, .hdpi .ui-dialog-content, .hdpi .ui-dialog
+{
+	font-size: 16pt;
+}
+.text
+{
+	padding-left: 4px;
+}
+#viewEntries tr th
+{
+	background-color: #444;
+}
+#viewEntries tr
+{
+	background-color: #111;
+}

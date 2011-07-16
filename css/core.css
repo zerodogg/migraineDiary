@@ -1,0 +1,65 @@
+body, .ui-widget-content, .ui-dialog-content, .ui-dialog
+{
+	background-color: #111 !important;
+	background-image: none;
+	color: #D3D7CF;
+	font-size: 11pt;
+}
+.ui-tabs
+{
+	border:0px;
+	background: none;
+}
+.ui-tabs-nav, .ui-state-default, .ui-widget-header
+{
+	background-image: none !important;
+}
+hr
+{
+	height: 1px;
+	border: 0;
+	background-color: #D3D7CF;
+} 
+#wizardContinueButton, #wizardBackButton
+{
+	float:right;
+}
+#wizardBackButton
+{
+	margin-right: 5px;
+}
+
+.wizardContainer
+{
+	width:400px;
+}
+#datePromptEntity .ui-widget-content
+{
+	border: 0px;
+}
+
+#viewEntries table
+{
+	background-color: #444;
+	border-radius: 1em;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	font-size: 0.8em;
+}
+#viewEntries td
+{
+	padding-left: 0.5em;
+}
+#viewEntries .nopad
+{
+	padding-left: 0em;
+}
+#viewEntries th
+{
+	padding-right: 5px;
+}
+
+#viewEntries tr:hover
+{
+	background-color: #111;
+}
