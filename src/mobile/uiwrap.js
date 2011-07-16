@@ -76,29 +76,6 @@
                 return 'extended';
             }
             return 'normal';
-        },
-
-        mainArea:
-        {
-            area: null,
-
-            init: function()
-            {
-                if(this.area == null)
-                    this.area = $('<div />').appendTo(add).addClass('wizardContainer');
-            },
-
-            setContent: function(cont)
-            {
-                this.init();
-                return this.area.html(cont);
-            },
-
-            transitionContent: function(cont)
-            {
-                this.init();
-                return this.setContent(cont);
-            }
         }
     };
 

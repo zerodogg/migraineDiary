@@ -15,29 +15,6 @@ var UIWidgets = {
                     self.buildViewTAB();
             }
         });
-    },
-
-    mainArea:
-    {
-        area: null,
-
-        init: function()
-        {
-            if(this.area == null)
-                this.area = $('<div/>').appendTo($('#addEntry')).addClass('wizardContainer');
-        },
-
-        setContent: function(cont)
-        {
-            this.init();
-            return this.area.html(cont);
-        },
-
-        transitionContent: function(cont)
-        {
-            this.init();
-            return this.setContent(cont);
-        }
     }
 };
 // Dialog wrapper ensuring proper placement on mobile platforms

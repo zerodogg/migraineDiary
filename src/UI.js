@@ -236,7 +236,6 @@ var UI = {
         {
             $('<div/>').attr('id','addEntry').appendTo('body').addClass('wizardContainer');
         }
-        $('#addEntry').addClass('wizardContainer'); // FIXME
         // FIXME empty addEntry
         var target = $('<div />').appendTo('#addEntry').attr('id','wizardContent');
         var menu = $('<div />').appendTo('#addEntry').attr('id','wizardButtons');

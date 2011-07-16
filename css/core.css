@@ -29,10 +29,6 @@ hr
 	margin-right: 5px;
 }
 
-.wizardContainer
-{
-	width:400px;
-}
 #datePromptEntity .ui-widget-content
 {
 	border: 0px;
@@ -69,7 +65,7 @@ hr
 }
 #wizardSkipButton
 {
-	float:right
+	float:left
 }
 #wizardPrevButton
 {
