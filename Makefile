@@ -1,3 +1,4 @@
+GET=wget --no-verbose --no-check-certificate -O
 simpleJSi18nPath=../simpleJSi18n
 
 build: buildBundle buildAndroidBundle buildCSS
@@ -5,11 +6,11 @@ build: buildBundle buildAndroidBundle buildCSS
 	cat src/mobile/*.js  src/core.js > migraineDiary.android.js
 buildBundle:
 	[ -e "libs/jquery.js" ] || make downloadLibs
-	cat libs/jquery.json-2.2.min.js libs/jstorage.min.js libs/jquery-hotkeys.js libs/jqsimple-class.min.js > libs/libs-bundle.js
+	cat libs/jquery.json-2.2.min.js libs/jstorage.min.js libs/jquery-hotkeys.js libs/jqsimple-class.min.js libs/jquery-pubsub.js > libs/libs-bundle.js
 buildAndroidBundle:
 	[ -e "libs/jquery.js" ] || make downloadLibs
 	echo -n > libs/libs-bundle-android.js
-	first=1; for f in libs/jquery.js libs/jquery-ui.js libs/jquery.json-2.2.min.js libs/jstorage.min.js libs/jquery-hotkeys.js libs/jqsimple-class.min.js; do \
+	first=1; for f in libs/jquery.js libs/jquery-ui.js libs/jquery.json-2.2.min.js libs/jstorage.min.js libs/jquery-hotkeys.js libs/jqsimple-class.min.js libs/jquery-pubsub.js; do \
 		[ "$$first" != "1" ] && echo "" >> libs/libs-bundle-android.js; \
 		first=0; \
 		echo "/* $$f */" >> libs/libs-bundle-android.js; \
@@ -20,12 +21,13 @@ buildCSS:
 	cat css/core.css css/mobile.css > mobile.css
 
 downloadLibs:
-	wget --no-check-certificate -O libs/LAB.js https://github.com/getify/LABjs/raw/master/LAB.min.js
-	wget --no-check-certificate -O libs/jquery.json-2.2.min.js http://jquery-json.googlecode.com/files/jquery.json-2.2.min.js
-	wget --no-check-certificate -O libs/jstorage.min.js http://github.com/andris9/jStorage/raw/master/jstorage.min.js
-	wget --no-check-certificate -O libs/jquery-hotkeys.js http://js-hotkeys.googlecode.com/files/jquery.hotkeys-0.7.9.min.js
-	wget --no-check-certificate -O libs/jquery.js http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js
-	[ -e libs/jquery-ui.js ] || wget --no-check-certificate -O libs/jquery-ui.js http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js
+	$(GET) libs/LAB.js https://github.com/getify/LABjs/raw/master/LAB.min.js
+	$(GET) libs/jquery.json-2.2.min.js http://jquery-json.googlecode.com/files/jquery.json-2.2.min.js
+	$(GET) libs/jstorage.min.js http://github.com/andris9/jStorage/raw/master/jstorage.min.js
+	$(GET) libs/jquery-hotkeys.js http://js-hotkeys.googlecode.com/files/jquery.hotkeys-0.7.9.min.js
+	$(GET) libs/jquery.js http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js
+	$(GET) libs/jquery-pubsub.js https://raw.github.com/gist/661855/89a024203615951aa8384071e0a408283b44c6a7/jquery.ba-tinypubsub.min.js
+	[ -e libs/jquery-ui.js ] || $(GET) libs/jquery-ui.js http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js
 fetchPhoneGap: PG_VERSION=0.9.4
 fetchPhoneGap:
 	mkdir -p android/libs
