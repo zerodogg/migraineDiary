@@ -43,9 +43,9 @@ var migraineDiary =
             $('body').html('You are running an ancient version of MSIE that does not work with the migraine diary.<br />We recommend that you upgrade to <a href="http://www.getfirefox.com/">Firefox</a>');
             return;
         }
-        UI.init(function (wizard)
+        $.subscribe('/wizard/done',function(params)
         {
-            self.appendData(wizard.data);
+            self.appendData(params.wizard.data);
             self.saveData();
             if($.browser.isNativeMobile)
             {
@@ -63,6 +63,7 @@ var migraineDiary =
                 });
             }
         });
+        UI.init();
     },
 
     appendData: function (data)

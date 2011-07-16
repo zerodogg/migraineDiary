@@ -62,12 +62,16 @@ var UI = {
                     label:_('No')
                 }
             ],
-            onDone: function (value,wizard)
+            onDone: function (wizard,value)
             {
-                if(value == true)
-                    return true;
-                wizard.runNamedStep('sleep');
-                return false;
+                if(value != true)
+                {
+                    wizard.addIgnoredStep('medEffect');
+                }
+                else
+                {
+                    wizard.removeIgnoredStep('medEffect');
+                }
             }
         },
 
@@ -177,7 +181,7 @@ var UI = {
                     label:_('3 litre or more')
                 }
             ],
-            onDone: function(value,wizard) 
+            onDone: function(wizard,value) 
             {
                 if(diary.data.sex == 'male')
                 {
@@ -218,19 +222,28 @@ var UI = {
         }
     },
 
-    init: function (saveFunc)
+    init: function ()
     {
         if($.browser.isMobile)
             $('body').addClass('mobile');
         UIWidgets.tabBar(this);
         this.initWizard();
-        this.saveFunc = saveFunc;
     },
 
     initWizard: function()
     {
+        if (! $('#addEntry'))
+        {
+            $('<div/>').attr('id','addEntry').appendTo('body').addClass('wizardContainer');
+        }
+        $('#addEntry').addClass('wizardContainer'); // FIXME
+        // FIXME empty addEntry
+        var target = $('<div />').appendTo('#addEntry').attr('id','wizardContent');
+        var menu = $('<div />').appendTo('#addEntry').attr('id','wizardButtons');
         this.wizard = new jqWizard({
-            steps: this.steps
+            steps: this.steps,
+            target: target,
+            menu: menu
         });
         this.wizard.next();
     },

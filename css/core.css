@@ -63,3 +63,15 @@ hr
 {
 	background-color: #111;
 }
+#wizardButtons
+{
+	padding-top: 1em;
+}
+#wizardSkipButton
+{
+	float:right
+}
+#wizardPrevButton
+{
+	float:left
+}

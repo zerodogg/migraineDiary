@@ -5,7 +5,8 @@
  * Dependencies: jQsimple-class, a pub/sub implementation available on $
  *
  * Publishes the following events:
- * /wizard/done - parameters: { wizard: this }
+ * /wizard/done        - parameters: { wizard: this }
+ * /wizard/displayStep - parameters: { wizard: this, step: data}  // *after* step has rendered
  *
  * the steps hash which defines the wizard is in the following form:
  *  {
@@ -39,7 +40,7 @@
  *      },
  *  }
  */
-var wizard = jClass.virtual({
+var wizard = jClass({
 
     /* Step hash as supplied by the user */
     steps: {},
@@ -55,6 +56,8 @@ var wizard = jClass.virtual({
     /* The step currently being run */
     currentStep: '',
 
+    ignoredSteps: [],
+
     /* Data saved by our current session */
     data: {},
 
@@ -64,20 +67,55 @@ var wizard = jClass.virtual({
         this.wizardMeta  = params.steps._meta;
         this.steps._meta = null;
 
+        if(params.order)
+        {
+            this.remainingSteps = params.order;
+        }
+        else
+        {
+            this.remainingSteps = this.wizardMeta.defaultOrder;
+        }
+
         if(this.wizardMeta.apiversion !== 0)
         {
             throw('Wizard: Unsupported API version: '+this.wizardMeta.apiversion);
+        }
+        if(this.remainingSteps.length <= 0)
+        {
+            throw('Wizard: No steps to run (remainingSteps is empty, no params.order or defaultOrder)');
         }
     },
 
     next: function()
     {
+        this._runNextStep(false);
+    },
+
+    skip: function()
+    {
+        this._runNextStep(true);
+    },
+
+    _runNextStep: function(skip)
+    {
         if(this.currentStep)
         {
             this.stack.push(this.currentStep);
-            var value      = this.getFieldValue();
-            var key        = this.steps[this.currentStep].setting;
-            this.data[key] = value;
+            var onDone = this.getCurrentStep().onDone;
+            if (!skip)
+            {
+                var value      = this.getFieldValue();
+                var key        = this.getCurrentStep().setting;
+                this.data[key] = value;
+                if(onDone)
+                {
+                    onDone(this,value);
+                }
+            }
+            else if(onDone)
+            {
+                onDone(this,undefined);
+            }
         }
         if(this.remainingSteps.length > 0)
         {
@@ -96,20 +134,59 @@ var wizard = jClass.virtual({
             throw('Wizard: Attempt to call previous() on a wizard without previous steps');
         }
 
-        this.remainingSteps.push(this.currentStep);
+        this.remainingSteps.unshift(this.currentStep);
 
-        this.runStep(this.stack.pop());
+        var prev;
+        var ignored = true;
+        while(ignored)
+        {
+            prev = this.stack.pop();
+            if(this.stepIgnored(prev))
+            {
+                this.remainingSteps.unshift(prev);
+                ignored = true;
+            }
+            else
+            {
+                ignored = false;
+            }
+        }
+        this.runStep(prev);
     },
 
     runStep: function(stepLabel)
     {
         var step         = this.steps[stepLabel];
         this.currentStep = stepLabel;
+        if(this.stepIgnored(stepLabel))
+        {
+            return this.skip();
+        }
         if (!step)
         {
             throw('Wizard: Unable to retrieve step: '+stepLabel);
         }
-        this.rendererField(step);
+        this.renderField(step);
+        $.publish('/wizard/displayStep', { wizard: this, step: step });
+    },
+
+    addIgnoredStep: function(step)
+    {
+        this.ignoredSteps.push(step);
+    },
+
+    removeIgnoredStep: function(step)
+    {
+        var entry = $.inArray(step,this.ignoredSteps);
+        if(entry !== -1)
+        {
+            this.ignoredSteps[entry] = null;
+        }
+    },
+    stepIgnored: function(step)
+    {
+        var entry = $.inArray(step,this.ignoredSteps);
+        return entry === -1 ? false : true;
     },
 
     renderField: function(field)
@@ -120,5 +197,10 @@ var wizard = jClass.virtual({
     getFieldValue: function()
     {
         throw('Wizard: Subclass does not implement getFieldValue()');
+    },
+
+    getCurrentStep: function()
+    {
+        return this.steps[ this.currentStep ];
     },
 });

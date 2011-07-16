@@ -2,7 +2,7 @@ GET=wget --no-verbose --no-check-certificate -O
 simpleJSi18nPath=../simpleJSi18n
 
 build: buildBundle buildAndroidBundle buildCSS
-	cat src/browser/*.js src/pubsub.js src/wizard.js src/wizardRenderer.js src/UI.js src/newcore.js > migraineDiary.js
+	cat src/browser/*.js src/wizard.js src/wizardRenderer.js src/UI.js src/core.js > migraineDiary.js
 	cat src/mobile/*.js  src/core.js > migraineDiary.android.js
 buildBundle:
 	[ -e "libs/jquery.js" ] || make downloadLibs
