@@ -22,3 +22,5 @@ migraineDiary.android.js
 migraineDiary.js
 uistyle-jqt
 libs/jquery.mobile.js
+desktop.css
+mobile.css
