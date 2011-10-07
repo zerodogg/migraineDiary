@@ -10,6 +10,7 @@ libs/LAB.js
 libs/jquery-ui.js
 libs/jquery.js
 libs/libs-bundle-android.js
+libs/jquery-pubsub.js
 android/assets/www/
 android/build.xml
 android/bin
