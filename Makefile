@@ -1,7 +1,7 @@
 GET=wget --no-verbose --no-check-certificate -O
 simpleJSi18nPath=../simpleJSi18n
 
-COREFILES=src/wizard.js src/wizardRenderer.js src/UI.js src/core.js
+COREFILES=src/wizard.js src/questionRenderer.js src/wizardRenderer.js src/UI.js src/core.js
 
 build: buildBundle buildAndroidBundle buildCSS
 	cat src/browser/*.js $(COREFILES) > migraineDiary.js
