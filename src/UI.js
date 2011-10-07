@@ -5,9 +5,11 @@ var UI = {
     {
         _meta: {
             apiversion: 0,
-            defaultOrder: ['startTime','intensity','endTime','medication','medEffect','sleep','drink','menstalPeriod'],
+            defaultOrder: ['startTime','intensity','endTime','medication','medEffect','sleep','drink','menstralPeriod'],
         },
+        /* Wizard+edit steps */
         'intensity': {
+                label: _('Intensity'),
                 type: 'selector',
                 setting: 'intensity',
                 isSkippable: false,
@@ -30,16 +32,21 @@ var UI = {
                 ]
             },
         'startTime': {
+            label: _('Started at'),
             type: 'time',
-            setting: 'start',
+            setting: 'startTime',
             isSkippable: false,
             title: _('Started'),
             information: '',
             prompt: _('When did the migraine start?')
         },
 
+        // We also use a subscriber to the /wizard/renderStep event
+        // to ensure that endTime > startTime
         'endTime': {
+            label: _('Ended at'),
             type: 'time',
+            setting: 'endTime',
             isSkippable: false,
             title: _('Ended'),
             information: '',
@@ -47,6 +54,7 @@ var UI = {
         },
 
         'medication': {
+            label: _('Took medication?'),
             type: 'selector',
             setting: 'medication',
             title: _('Medication'),
@@ -76,6 +84,7 @@ var UI = {
         },
 
         'medEffect': {
+            label: _('Med. effect'),
             type: 'selector',
             setting: 'medEffect',
             title: _('Medication (effect)'),
@@ -191,7 +200,7 @@ var UI = {
                 return true;
             }
         },
-        'menstalPeriod':{
+        'menstralPeriod':{
             type: 'selector',
             setting: 'mens',
             title: _('Menstral period'),
@@ -219,6 +228,20 @@ var UI = {
                 }
                 return true;
             }
+        },
+        /* Edit-only steps.
+         * These are not run during the wizard, though they can be viewed using it
+         * (with the exception of "duration", which is a generated value). */
+        'savedAt': {
+            setting: 'savedAt',
+            information: _('Select the date for this entry'),
+            label: _('Date'),
+            type: 'date',
+        },
+        'duration': {
+            setting: 'duration',
+            label: _('Duration'),
+            type: 'meta',
         }
     },
 
@@ -227,7 +250,41 @@ var UI = {
         if($.browser.isMobile)
             $('body').addClass('mobile');
         UIWidgets.tabBar(this);
+        this.initSubscriptions();
         this.initWizard();
+    },
+
+    initSubscriptions: function()
+    {
+        var self = this;
+        $.subscribe('/wizard/renderStep',function(data)
+        {
+            if(data.step.setting == 'endTime')
+            {
+                var start = data.wizard.data.startTime.split(':');
+                mLog(start[0]+1);
+                $.extend(data.settings,{
+                    // FIXME: Blindly setting hour to start +1
+                    hour: parseInt(start[0],10)+1,
+                    minute: '00',
+                    minHour: start[0],
+                    minMinute: start[1]
+                });
+            }
+        });
+        $.subscribe('/wizard/done',function(data)
+        {
+            var start = data.wizard.data.startTime.split(':');
+            var end = data.wizard.data.endTime.split(':');
+            var startH = ( parseInt(start[0],10)*60 ) + parseInt(start[1]);
+            var endH   = ( parseInt(end[0],10) * 60) + parseInt(end[1]);
+            var duration = (endH - startH)/60;
+            var hours = parseInt(duration,10);
+            duration = duration-hours;
+            var minutes = duration*60;
+            data.wizard.data.duration = self.timePad(hours)+':'+self.timePad(minutes);
+            diary.saveData();
+        });
     },
 
     initWizard: function()
@@ -363,5 +420,450 @@ var UI = {
         if(title)
             params.title = title;
         $('<div/>').html(text).mDialog(params);
-    }
+    },
+
+    buildViewTAB: function()
+    {
+        var self = this;
+
+        var headOrder = [ 'savedAt','startTime','endTime','duration','medication','medEffect','sleep','drink','menstralPeriod' ]; // FIXME: menstralPeriod needs checking
+
+        var headMap = $.extend({},this.steps);
+        headMap['medication'].postRun = function($col,value,entry)
+        {
+            if(value == true)
+            {
+                $col.parents('tr').find('[value=medEffect]').mClick();
+            }
+            else
+            {
+                diary.data.savedData[entry].medEffect = null;
+                $col.parents('tr').find('[value=medEffect]').html('-');
+            }
+        };
+
+        var tab = $('#viewEntries').empty();
+        var table = $('<table id="dataList"></table>').appendTo(tab);
+        var topRow = $('<tr></tr>').appendTo(table);
+        var headers = '';
+        $.each(headOrder, function (i, val)
+        {
+            var label = headMap[val].label;
+            if(label == null)
+            {
+                label = headMap[val].title;
+            }
+            headers += '<th>'+label+'</th>';
+        });
+        headers += '<th>&nbsp;</th>';
+        topRow.append(headers);
+
+        $.each(diary.data.savedData, function (int,entry)
+        {
+            var row = $('<tr value="'+int+'"></tr>').appendTo(table);
+            var content = '';
+            $.each(headOrder, function (i, val)
+            {
+                var $td = $('<td />');
+                $td.attr('value',val);
+                $td.html(self.renderEntry(entry[val], headMap[val]));
+                $td.appendTo(row);
+            });
+            $('<td value="delete" class="nopad"><span class="ui-icon ui-icon-trash"></span></td>').appendTo(row).mClick(function()
+            {
+                var $dialog = $('<div />').appendTo('body');
+                var close = function ()
+                {
+                    $dialog.mDialog('close');
+                    $dialog.remove();
+                };
+                var buttons = {};
+                buttons[_('Yes')] = function ()
+                {
+                    close();
+                    diary.data.savedData.splice(int,1);
+                    diary.saveData();
+                    self.buildViewTAB();
+                };
+                buttons[_('No')] = close;
+                $dialog.html(_('Are you sure you want to <b>permanently</b> delete this entry?'));
+                $dialog.mDialog({
+                    close: false,
+                    buttons: buttons
+                });
+            });
+        });
+        var columnClick = function ()
+        {
+            var me = $(this);
+            var val = me.text();
+            var input = $('<input type="text" />').val(val);
+            var blur = function ()
+            {
+                val = input.val();
+                me.html(val);
+                me.addClass('columnValue');
+                me.click(columnClick);
+            };
+            input.blur(blur);
+            input.submit(blur);
+            me.removeClass('columnValue');
+            me.unbind('click');
+            me.html(input);
+            input.keypress(function (event)
+            {
+                if (event.which == 13)
+                    input.trigger('blur');
+            });
+            input.focus();
+            input.select();
+        };
+        $('td').mClick(function ()
+        {
+            self.columnEditor(this, headMap);
+        });
+    },
+
+    renderEntry: function(entry,data)
+    {
+        var type = data.type;
+        var self = this;
+        if(data === undefined)
+        {
+            return '-';
+        }
+        if(type == 'selector')
+        {
+            var value = this.getHashFromArrayByVal(data.selections, 'val', entry);
+            if(value === undefined)
+            {
+                var fallback = this.fallbackEntry(entry);
+                var err = 'Failed to locate value "'+entry+'" for selector '+data.setting;
+                if(fallback !== undefined)
+                {
+                    entry = fallback;
+                }
+                this._renderError(entry,data,'locate',fallback);
+                return entry;
+            }
+            if(value.shortLabel)
+            {
+                return value.shortLabel;
+            }
+            else
+            {
+                return value.label;
+            }
+        }
+        else if (type == 'date')
+        {
+            var parsed = parseInt(entry,10);
+            if (isNaN(parsed))
+            {
+                this._renderError(entry,data,'parse int');
+                return '-';
+            }
+            entry = parsed;
+            if(entry > 1254329048)
+            {
+                try
+                {
+                    var dt = new Date(entry*1000);
+                    var year = [ dt.getFullYear(), self.timePad(dt.getMonth()+1), self.timePad(dt.getDate()) ];
+                    var val = year.join('-');
+                    return val;
+                }
+                catch(e)
+                {
+                    mLog(e);
+                    return '(failed to parse date "'+entry+'")';
+                }
+            }
+            else
+            {
+                return entry;
+            }
+        }
+        else if(type == 'raw' || type == 'time')
+        {
+            return entry;
+        }
+        mLog('Unknown type: '+type);
+        return entry;
+    },
+    _renderError: function(entry,data,type,fallback)
+    {
+        if(data.setting === undefined)
+        {
+            mLog('Confused, no selector for entry: ',data);
+        }
+        var err = 'Failed to '+type+' value "'+entry+'" for selector '+data.setting;
+        if(fallback !== undefined && fallback !== entry)
+        {
+            err = err + ' - will use fallback value: '+fallback;
+        }
+        mLog(err);
+    },
+
+    getHashFromArrayByVal: function(arr,key,val)
+    {
+        var ret;
+        $.each(arr, function(i,e)
+        {
+            if(e[key] !== undefined && e[key] == val)
+            {
+                ret = e;
+            }
+        });
+        return ret;
+    },
+
+    fallbackEntry: function(entry)
+    {
+        if(entry === undefined)
+        {
+            return '-';
+        }
+        else if(entry === true || entry === 'true')
+        {
+            return _('Yes');
+        }
+        else if(entry === false || entry === 'false')
+        {
+            return _('No');
+        }
+        return entry;
+    },
+
+    buildViewTAB_OLD: function ()
+    {
+        var self = this;
+        var headOrder = [ 'savedAt','start','intensity','medication','medEffect','sleep' ];
+        if(diary.data.sex != 'male')
+            headOrder.push('mens');
+        var headMap = {
+            'savedAt': {
+                step: '',
+                type: 'date',
+                label: _('Date'),
+                minHeight: 380,
+                minWidth: 330,
+                stepData: {
+                    information: _('Select the date for this entry'),
+                    type: 'date'
+                }
+            },
+            'intensity': {
+                step: 'intensity',
+                type: 'intensity',
+                label: _('Intensity')
+            },
+            'medication': {
+                step: 'medication',
+                type: 'bool',
+                label: _('Took medication?'),
+                postRun: function($col,value,entry)
+                {
+                    if(value == true)
+                    {
+                        $col.parents('tr').find('[value=medEffect]').mClick();
+                    }
+                    else
+                    {
+                        diary.data.savedData[entry].medEffect = null;
+                        $col.parents('tr').find('[value=medEffect]').html('-');
+                    }
+                }
+            },
+            'medEffect': {
+                step: 'medEffect',
+                type: 'medEffect',
+                label: _('Med. effect'),
+                preCheck: function ($col)
+                {
+                    var ent = $col.parents('tr').attr('value');
+                    var med = diary.data.savedData[ent].medication;
+                    if(med == true)
+                        return true;
+                    return false;
+                }
+            },
+            'sleep': { 
+                step: 'sleep',
+                type: 'int',
+                label: _('Hours of sleep')
+            },
+            'start': {
+                step: 'start',
+                type: 'raw',
+                label: _('Started at')
+            },
+            'mens': {
+                step: 'mens',
+                type: 'bool',
+                label: _('Menstral period')
+            }
+        };
+
+        var tab = $('#viewEntries').empty();
+        var table = $('<table id="dataList"></table>').appendTo(tab);
+        var topRow = $('<tr></tr>').appendTo(table);
+        var headers = '';
+        $.each(headOrder, function (i, val)
+        {
+            headers += '<th>'+headMap[val].label+'</th>';
+        });
+        headers += '<th>&nbsp;</th>';
+        topRow.append(headers);
+        $.each(diary.data.savedData, function (int,entry)
+        {
+            var row = $('<tr value="'+int+'"></tr>').appendTo(table);
+            var content = '';
+            $.each(headOrder, function (i, val)
+            {
+                var $td = $('<td />');
+                $td.attr('value',val);
+                $td.html(self.renderEntry(entry[val], headMap[val]));
+                $td.appendTo(row);
+            });
+            $('<td value="delete" class="nopad"><span class="ui-icon ui-icon-trash"></span></td>').appendTo(row).mClick(function()
+            {
+                var $dialog = $('<div />').appendTo('body');
+                var close = function ()
+                {
+                    $dialog.mDialog('close');
+                    $dialog.remove();
+                };
+                var buttons = {};
+                buttons[_('Yes')] = function ()
+                {
+                    close();
+                    diary.data.savedData.splice(int,1);
+                    diary.saveData();
+                    self.buildViewTAB();
+                };
+                buttons[_('No')] = close;
+                $dialog.html(_('Are you sure you want to <b>permanently</b> delete this entry?'));
+                $dialog.mDialog({
+                    close: false,
+                    buttons: buttons
+                });
+            });
+        });
+        var columnClick = function ()
+        {
+            var me = $(this);
+            var val = me.text();
+            var input = $('<input type="text" />').val(val);
+            var blur = function ()
+            {
+                val = input.val();
+                me.html(val);
+                me.addClass('columnValue');
+                me.click(columnClick);
+            };
+            input.blur(blur);
+            input.submit(blur);
+            me.removeClass('columnValue');
+            me.unbind('click');
+            me.html(input);
+            input.keypress(function (event)
+            {
+                if (event.which == 13)
+                    input.trigger('blur');
+            });
+            input.focus();
+            input.select();
+        };
+        $('td').mClick(function ()
+        {
+            self.columnEditor(this, headMap);
+        });
+    },
+    columnEditor: function (column, map)
+    {
+        var self = this;
+        var $d = $('#columnDialog');
+        if ($d.length == 0)
+        {
+            $d = $('<div/>').attr('id','columnDialog').appendTo('body');
+        }
+        $d.empty();
+        var renderer = new standaloneQuestions({
+            target: $d
+        });
+        var $col = $(column);
+        var type = $col.attr('value');
+        var info = map[type];
+        var data;
+
+        // If type is 'delete' then it's the deletion column, which is
+        // handled elsewhere
+        if(type == 'delete')
+            return;
+
+        if(info.preCheck && !info.preCheck($col))
+            return;
+
+        if(info.stepData)
+        {
+            data = info.stepData;
+        }
+        else
+        {
+            data = this.wizard.getStepByName(type);
+        }
+
+        if(data.changeInformation)
+        {
+            $d.append(data.changeInformation+ '<br />');
+        }
+        else if(data.information)
+        {
+            $d.append(data.information + '<br />');
+        }
+        if(data.type == 'meta')
+        {
+            return;
+        }
+        renderer.renderField(data);
+        var buttons = {};
+        buttons[_('Save change')] = function ()
+        {
+            var value = renderer.getFieldValue();
+            $d.mDialog('close');
+            $d.empty();
+            if(data.type == 'date')
+            {
+                value = new Date(value);
+                value = Math.round(value.getTime()/1000);
+            }
+            if(value === '' || value === null || value === undefined)
+                return;
+            var entry = $col.parents('tr').attr('value');
+            diary.data.savedData[entry][type] = value;
+            $col.html(self.renderEntry(value,info));
+            diary.saveData();
+            if (info.postRun)
+                info.postRun($col,value,entry);
+        };
+        var dialogSettings = {
+            minWidth: 400,
+            minHeight: null,
+            buttons: buttons
+        };
+        if (info.minHeight)
+            dialogSettings.minHeight = info.minHeight;
+        if(info.minWidth)
+            dialogSettings.minWidth = info.minWidth;
+        $d.mDialog(dialogSettings);
+    },
+
+    timePad: function (val)
+    {
+        val = ""+val;
+        if(val.length == 1)
+            return '0'+val;
+        return val;
+    },
 };

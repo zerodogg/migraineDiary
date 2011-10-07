@@ -4,9 +4,49 @@
  *
  * Dependencies: jQsimple-class, a pub/sub implementation available on $
  *
+ * *PUB/SUB EVENTS*
  * Publishes the following events:
- * /wizard/done        - parameters: { wizard: this }
- * /wizard/displayStep - parameters: { wizard: this, step: data}  // *after* step has rendered
+ *
+ *  /wizard/done
+ *      parameters: { wizard:this }
+ *      Published upon completion of a wizard
+ *
+ *  /wizard/displayStep
+ *      parameters: { wizard: this, step: stepDataFromHash }
+ *      Published when displaying a new step, *after* said step has been
+ *      rendered.
+ *
+ *  /wizard/renderStep
+ *      parameters: VARIES
+ *      Published before a new step is rendered. The parameters differ depending
+ *      on the step type. Using this event you will be able to modify settings
+ *      for a step during rendering.
+ *
+ *          time steps:
+ *          { wizard: this, type: 'time', step: data, settings: settings }
+ *          Settings references a hash in the following format:
+ *          {
+ *              hour: default selected hour,
+ *              minute:  default selected minute,
+ *              minHour: the earliest hour that can be selected,
+ *              minMinute: the earliest minute that can be selected during
+ *                  the above hour (affects that hour only, all others will have
+ *                  all minute values available)
+ *          }
+ *          Said hash comes pre-filled with defaults, you can modify it if you
+ *          wish, or leave it alone otherwise.
+ *
+ *          selector steps:
+ *          { wizard: this, step: data }
+ *          Selectors can not be modified in renderStep.
+ *
+ * The initial path (/wizard/) can be changed to any arbitrary path by supplying the
+ * pubNamespace parameter during construction, this can allow you to run multiple
+ * wizards with separate sets of subscribers.
+ *
+ * *STEPS DATA STRUCTURE*
+ *
+ * TODO: Document shortLabel for selections, and label for toplevels
  *
  * the steps hash which defines the wizard is in the following form:
  *  {
@@ -58,6 +98,8 @@ var wizard = jClass({
 
     ignoredSteps: [],
 
+    pubNamespace: '/wizard/',
+
     /* Data saved by our current session */
     data: {},
 
@@ -83,6 +125,10 @@ var wizard = jClass({
         if(this.remainingSteps.length <= 0)
         {
             throw('Wizard: No steps to run (remainingSteps is empty, no params.order or defaultOrder)');
+        }
+        if(params.pubNamespace)
+        {
+            this.pubNamespace = params.pubNamespace;
         }
     },
 
@@ -123,8 +169,13 @@ var wizard = jClass({
         }
         else
         {
-            $.publish('/wizard/done', { wizard: this });
+            this.done();
         }
+    },
+
+    done: function()
+    {
+        this.publish('done');
     },
 
     previous: function()
@@ -167,7 +218,7 @@ var wizard = jClass({
             throw('Wizard: Unable to retrieve step: '+stepLabel);
         }
         this.renderField(step);
-        $.publish('/wizard/displayStep', { wizard: this, step: step });
+        this.publish('displayStep', { step: step });
     },
 
     addIgnoredStep: function(step)
@@ -183,6 +234,7 @@ var wizard = jClass({
             this.ignoredSteps[entry] = null;
         }
     },
+
     stepIgnored: function(step)
     {
         var entry = $.inArray(step,this.ignoredSteps);
@@ -201,6 +253,21 @@ var wizard = jClass({
 
     getCurrentStep: function()
     {
-        return this.steps[ this.currentStep ];
+        return this.getStepByName(this.currentStep);
+    },
+
+    getStepByName: function(stepName)
+    {
+        return this.steps[ stepName ];
+    },
+
+    /*
+     * Pub/sub wrapper helper
+     */
+    publish: function(name,data)
+    {
+        var params = {wizard: this};
+        $.extend(params,data);
+        return $.publish(this.pubNamespace+name,params);
     },
 });
