@@ -33,10 +33,10 @@ var migraineDiary =
     UI: null,
 
     version: '0.2',
+    dataVersion: 2,
     confKey: 'org.zerodogg.migraineDiary',
 
     data: {
-        dataVersion:1,
         savedData:[]
     },
 
@@ -53,6 +53,13 @@ var migraineDiary =
         {
             $('body').empty();
             $('body').html('You are running an ancient version of MSIE that does not work with the migraine diary.<br />We recommend that you upgrade to <a href="http://www.getfirefox.com/">Firefox</a>');
+            return;
+        }
+        // Check for unsupported data
+        if(this.data.dataVersion > this.dataVersion)
+        {
+            $('body').empty();
+            $('body').html('The migraineDiary detected data of a version that it does not know how to handle (version '+this.dataVersion+'). This data is from a later version of the migraineDiary, and is incompatible with the version you are currently running. You will have to update the migraineDiary in order to keep using it.<br /><br />See <a href="http://random.zerodogg.org/migrainediary/">http://random.zerodogg.org/migrainediary/</a> for information on how to upgrade.<br /><br />migraineDiary will now shut down.');
             return;
         }
         $.subscribe('/wizard/done',function(params)
@@ -91,7 +98,36 @@ var migraineDiary =
         var data = $.jStorage.get(this.confKey);
         if(data)
         {
+            if(data.dataVersion == 1)
+            {
+                /* ***
+                 * Upgrade version 1 migraineDiary data to the version 2 format.
+                 * ***
+                 *
+                 * Version 2 adds several new fields (which obviously needs no upgrading
+                 * as they werent there in version 1), but also replaces the "start" field
+                 * with startTime, endTime and duration. Seeing as we don't have an endTime
+                 * in the old dataset, we can't generate the duration. As such, we just
+                 * rename start to startTime and leave the other fields blank.
+                 */
+                try
+                {
+                    $.each(data.savedData, function(i,v)
+                    {
+                        v['startTime'] = v['start'];
+                        delete v['start'];
+                    });
+                }
+                catch(e) { }
+
+                this.data.dataVersion = this.dataVersion;
+            }
+
             this.data = data;
+        }
+        else
+        {
+            this.data.dataVersion = this.dataVersion;
         }
     },
 
