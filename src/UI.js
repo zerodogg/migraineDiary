@@ -1,6 +1,18 @@
+/*
+ * Platform-independant UI components for migraineDiary.
+ *
+ * This file contains the UI class, which builds most of the migraineDiary
+ * UI, and hooks into the various back-end methods. It depends upon an
+ * implementation of the UIWidgets class. For browsers the implementation
+ * is small, and can be found in browser/uiwrap.js - for mobile devices
+ * it's quite a bit larger to build an interface more suited to mobile
+ * devices, it's in mobile/uiwrap.js
+ */
 var UI = {
+    // Reference to the primary wizard class that is in use
     wizard: null,
 
+    // Wizard step definition
     steps:
     {
         _meta: {
@@ -245,6 +257,7 @@ var UI = {
         }
     },
 
+    // Main app UI initialization
     init: function ()
     {
         if($.browser.isMobile)
@@ -254,6 +267,7 @@ var UI = {
         this.initWizard();
     },
 
+    /* Initializes pub/sub subscriptions */
     initSubscriptions: function()
     {
         var self = this;
@@ -287,6 +301,7 @@ var UI = {
         });
     },
 
+    /* Initializes the wizard */
     initWizard: function()
     {
         if (! $('#addEntry'))
@@ -304,6 +319,7 @@ var UI = {
         this.wizard.next();
     },
 
+    /* Shows a debug dialog */
     showDebugDialog: function ()
     {
         var info = [];
@@ -355,6 +371,7 @@ var UI = {
         });
     },
 
+    /* Shows a data dump for the user, if they want to copy or view the raw data */
     showDatadumpDialog: function()
     {
         var data = $.toJSON(migraineDiary.data);
@@ -369,6 +386,7 @@ var UI = {
         
     },
 
+    /* Shows a simple about dialog */
     showAboutDialog: function()
     {
         var text = __('migraineDiary version %(VERSION)', { VERSION: diary.version } ) + '<br />' +
@@ -591,6 +609,7 @@ var UI = {
         mLog('Unknown type: '+type);
         return entry;
     },
+
     _renderError: function(entry,data,type,fallback)
     {
         if(data.setting === undefined)
