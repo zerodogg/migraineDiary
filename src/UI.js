@@ -311,8 +311,25 @@ var UI = {
         // FIXME empty addEntry
         var target = $('<div />').appendTo('#addEntry').attr('id','wizardContent');
         var menu = $('<div />').appendTo('#addEntry').attr('id','wizardButtons');
+        this.createWizardInstance(target,menu);
+    },
+
+    /* Creates a new wizard instance */
+    createWizardInstance: function(target,menu)
+    {
+        if(target === undefined)
+        {
+            target = $('#wizardContent');
+        }
+        if(menu === undefined)
+        {
+            menu = $('#wizardButtons');
+        }
+
         this.wizard = new jqWizard({
-            steps: this.steps,
+            /* steps gets modified by the wizard, and so needs to be cloned so
+             * that we can create new instances later */
+            steps: $.extend(true,{},this.steps),
             target: target,
             menu: menu
         });

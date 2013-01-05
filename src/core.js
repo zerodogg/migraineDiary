@@ -69,7 +69,7 @@ var migraineDiary =
             if($.browser.isNativeMobile)
             {
                 $('#viewEntriesButton').mClick();
-                UI.buildWizard(UI.saveFunc);
+                UI.createWizardInstance();
             }
             else
             {
