@@ -105,6 +105,11 @@ var wizard = jClass({
 
     _constructor: function(params)
     {
+        if (params == null || params.steps == null || params.steps._meta == null)
+        {
+            throw('Invalid parameters supplied to wizard constructor');
+        }
+
         this.steps       = params.steps;
         this.wizardMeta  = params.steps._meta;
         this.steps._meta = null;
