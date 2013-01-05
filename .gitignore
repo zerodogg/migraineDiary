@@ -25,3 +25,5 @@ uistyle-jqt
 libs/jquery.mobile.js
 desktop.css
 mobile.css
+external/
+org.zerodogg.migraineDiary/

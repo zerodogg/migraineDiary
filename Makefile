@@ -30,13 +30,6 @@ downloadLibs:
 	$(GET) libs/jquery.js http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js
 	$(GET) libs/jquery-pubsub.js https://raw.github.com/gist/661855/89a024203615951aa8384071e0a408283b44c6a7/jquery.ba-tinypubsub.min.js
 	[ -e libs/jquery-ui.js ] || $(GET) libs/jquery-ui.js http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js
-fetchPhoneGap: PG_VERSION=0.9.4
-fetchPhoneGap:
-	mkdir -p android/libs
-	#wget http://phonegap.googlecode.com/files/phonegap-$(PG_VERSION).zip
-	unzip phonegap-$(PG_VERSION).zip
-	mv phonegap-$(PG_VERSION)/Android/phonegap.$(PG_VERSION).jar android/libs
-	rm -rf __MACOSX phonegap-$(PG_VERSION) phonegap-$(PG_VERSION).zip
 #fetchJQM: JQM_VERSION=1.0a3
 #fetchJQM:
 #	rm -rf uistyle-jqt
@@ -57,23 +50,51 @@ updatepo:
 	$(simpleJSi18nPath)/jsmsgfmt ./i18n.js ./po/*.po
 postat:
 	@for f in po/*.po; do  echo "$$f:"; msgfmt --stat -o /dev/null "$$f";done
-clean:
-	rm -rf ./android/assets/www/* ./android/bin/* ./android/gen/*
-androidPrep: clean buildAndroidBundle build
-	mkdir -p android/assets/www/libs
-	cp -r i18n.js mobile.css uistyle ./android/assets/www/
-	cp libs/libs-bundle-android.js ./android/assets/www/
-	cp migraineDiary-android.html ./android/assets/www/index.html
-	cp migraineDiary.android.js ./android/assets/www/migraineDiary.js
-	perl -pi -e 's/migraineDiary.android.js/migraineDiary.js/g' ./android/assets/www/index.html
+
+# --
+# Cordova (android) targets
+# --
+
+CORDOVA_PATH=./external/cordova/lib/android
+CORDOVA_BUILDDIR=org.zerodogg.migraineDiary
+downloadCordova: CD_VERSION=1.3.0
+downloadCordova:
+	@echo "*****";echo "Going to download external dependency: cordova";echo "*****"
+	mkdir -p external
+	cd external; wget -O cordova.zip https://nodeload.github.com/phonegap/phonegap/legacy.zip/2.2.0
+	cd external; UNZIP="" unzip cordova.zip
+	cd external; mv phonegap* cordova
+	rm -f external/cordova.zip
+androidPrep: clean cordovaPrep buildAndroidBundle build
+	mkdir -p $(CORDOVA_BUILDDIR)/assets/www/libs
+	cp -r i18n.js mobile.css uistyle $(CORDOVA_BUILDDIR)/assets/www/
+	cp libs/libs-bundle-android.js $(CORDOVA_BUILDDIR)/assets/www/libs/
+	cp migraineDiary-android.html $(CORDOVA_BUILDDIR)/assets/www/index.html
+	cp migraineDiary.android.js $(CORDOVA_BUILDDIR)/assets/www/migraineDiary.js
+	perl -pi -e 's/migraineDiary.android.js/migraineDiary.js/g' $(CORDOVA_BUILDDIR)/assets/www/index.html
 androidDebug: androidPrep
-	(cd android; ant debug install)
-androidBuild:
+	(cd $(CORDOVA_BUILDDIR); ant debug install)
+androidBuild: androidPrep androidBuildOnly
+androidBuildOnly:
 	@if [ "`stat -c%s "libs/jquery-ui.js"`" -gt "60000" ]; then\
 		echo "You have not build a stripped down jquery-ui. Refusing to build."; \
 		echo "Download one from http://jqueryui.com/download with only:"; \
 		echo "Core,Widget,Mouse,Button,Datepicker"; \
 		exit 1; \
 	fi
-	(cd android; ant release)
-	mv android/bin/migraineDiary-unsigned.apk .
+	(cd $(CORDOVA_BUILDDIR); ant release)
+	mv $(CORDOVA_BUILDDIR)/bin/migraineDiary*.apk .
+	rm -rf $(CORDOVA_BUILDDIR)
+cordovaPrep:
+	@if [ ! -e "$(CORDOVA_PATH)" ]; then make --no-print-directory downloadCordova;fi
+	$(CORDOVA_PATH)/bin/create $(CORDOVA_BUILDDIR)
+	rm -rf $(CORDOVA_BUILDDIR)/res $(CORDOVA_BUILDDIR)/src $(CORDOVA_BUILDDIR)/AndroidManifest.xml
+	cp -r android/* $(CORDOVA_BUILDDIR)/
+	perl -pi -e 's/cordovaExample/migraineDiary/g' $(CORDOVA_BUILDDIR)/*
+# --
+# Cleanup
+# --
+clean:
+	rm -rf $(CORDOVA_BUILDDIR)
+realclean: clean
+	rm -rf external
