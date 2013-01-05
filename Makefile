@@ -96,5 +96,6 @@ cordovaPrep:
 # --
 clean:
 	rm -rf $(CORDOVA_BUILDDIR)
+	rm -f migraineDiary.js migraineDiary.android.js desktop.css mobile.css
 realclean: clean
-	rm -rf external
+	rm -rf external *.apk
