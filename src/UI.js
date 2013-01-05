@@ -276,7 +276,6 @@ var UI = {
             if(data.step.setting == 'endTime')
             {
                 var start = data.wizard.data.startTime.split(':');
-                mLog(start[0]+1);
                 $.extend(data.settings,{
                     // FIXME: Blindly setting hour to start +1
                     hour: parseInt(start[0],10)+1,
@@ -563,7 +562,7 @@ var UI = {
     {
         var type = data.type;
         var self = this;
-        if(data === undefined)
+        if(entry === undefined)
         {
             return '-';
         }
@@ -619,7 +618,7 @@ var UI = {
                 return entry;
             }
         }
-        else if(type == 'raw' || type == 'time')
+        else if(type == 'raw' || type == 'time' || type == 'meta')
         {
             return entry;
         }
