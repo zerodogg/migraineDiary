@@ -72,8 +72,11 @@ androidPrep: clean cordovaPrep buildAndroidBundle build
 	cp migraineDiary-android.html $(CORDOVA_BUILDDIR)/assets/www/index.html
 	cp migraineDiary.android.js $(CORDOVA_BUILDDIR)/assets/www/migraineDiary.js
 	perl -pi -e 's/migraineDiary.android.js/migraineDiary.js/g' $(CORDOVA_BUILDDIR)/assets/www/index.html
-androidDebug: androidPrep
-	(cd $(CORDOVA_BUILDDIR); ant debug install)
+ANT_BUILD_MODE=release
+androidDebugInstall: ANT_BUILD_MODE=debug install
+androidDebugInstall: androidBuild
+androidDebug: ANT_BUILD_MODE=debug
+androidDebug: androidBuild
 androidBuild: androidPrep androidBuildOnly
 androidBuildOnly:
 	@if [ "`stat -c%s "libs/jquery-ui.js"`" -gt "60000" ]; then\
@@ -82,13 +85,13 @@ androidBuildOnly:
 		echo "Core,Widget,Mouse,Button,Datepicker"; \
 		exit 1; \
 	fi
-	(cd $(CORDOVA_BUILDDIR); ant release)
+	(cd $(CORDOVA_BUILDDIR); ant $(ANT_BUILD_MODE))
 	mv $(CORDOVA_BUILDDIR)/bin/migraineDiary*.apk .
 	rm -rf $(CORDOVA_BUILDDIR)
 cordovaPrep:
 	@if [ ! -e "$(CORDOVA_PATH)" ]; then make --no-print-directory downloadCordova;fi
 	$(CORDOVA_PATH)/bin/create $(CORDOVA_BUILDDIR)
-	rm -rf $(CORDOVA_BUILDDIR)/res $(CORDOVA_BUILDDIR)/src $(CORDOVA_BUILDDIR)/AndroidManifest.xml
+	rm -rf $(CORDOVA_BUILDDIR)/assets $(CORDOVA_BUILDDIR)/res $(CORDOVA_BUILDDIR)/src $(CORDOVA_BUILDDIR)/AndroidManifest.xml
 	cp -r android/* $(CORDOVA_BUILDDIR)/
 	perl -pi -e 's/cordovaExample/migraineDiary/g' $(CORDOVA_BUILDDIR)/*
 # --
