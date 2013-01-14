@@ -15,6 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+// Simplistic 'mobile browser' detection
+var MOBILE = true,
+    NATIVE_MOBILE = true;
 
 /*
  * Additional language detection for when browser language does
@@ -28,6 +31,3 @@ try
         window._LANGUAGE = language;
     }
 } catch(e){ };
-
-jQuery.browser.isMobile = true;
-jQuery.browser.isNativeMobile = true;

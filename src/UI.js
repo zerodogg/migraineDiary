@@ -260,7 +260,7 @@ var UI = {
     // Main app UI initialization
     init: function ()
     {
-        if($.browser.isMobile)
+        if(MOBILE)
             $('body').addClass('mobile');
         UIWidgets.tabBar(this);
         this.initSubscriptions();
@@ -344,7 +344,7 @@ var UI = {
         var language = window._LANGUAGE || navigator.language || navigator.browserLanguage;
         info.push('Language: '+language);
         var UALabel = 'User agent: ';
-        if($.browser.isNativeMobile)
+        if(NATIVE_MOBILE)
         {
             var edition = 'Native mobile edition running on ';
             if(navigator.userAgent.match(/Android/i))

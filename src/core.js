@@ -66,7 +66,7 @@ var migraineDiary =
         {
             self.appendData(params.wizard.data);
             self.saveData();
-            if($.browser.isNativeMobile)
+            if(NATIVE_MOBILE)
             {
                 $('#viewEntriesButton').mClick();
                 UI.createWizardInstance();

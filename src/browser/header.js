@@ -17,11 +17,12 @@
  */
 
 // Simplistic 'mobile browser' detection
-jQuery.browser.isMobile = navigator.userAgent.match(/(Opera (Mi|Mo)|Android|Mobile)/);
+var MOBILE = navigator.userAgent.match(/(Opera (Mi|Mo)|Android|Mobile)/),
+    NATIVE_MOBILE = false;
 
 /* Display an error message to the unfortunate users of these browsers.
  * Needs to be executed here to avoid syntax "errors" later on */
-if(!$.browser.isMobile && $.browser.msie && parseInt($.browser.version) < 8)
+if(!MOBILE && $.browser.msie && parseInt($.browser.version) < 8)
 {
     $('body').empty();
     $('body').html('You are running an ancient version of MSIE that does not work with the migraine diary.<br />We recommend that you upgrade to <a href="http://www.getfirefox.com/">Firefox</a>');

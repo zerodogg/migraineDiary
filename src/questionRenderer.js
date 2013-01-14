@@ -80,7 +80,7 @@ var questionRenderer = jClass.virtual({
     renderTime: function(data)
     {
         this.$target.append(data.prompt);
-        if($.browser.isNativeMobile)
+        if(NATIVE_MOBILE)
         {
             this.$target.append('<br />');
         }

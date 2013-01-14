@@ -20,7 +20,7 @@ var UIWidgets = {
 // Dialog wrapper ensuring proper placement on mobile platforms
 jQuery.fn.mDialog = function(args)
 {
-    if(jQuery.browser.isMobile && jQuery.isPlainObject(args))
+    if(MOBILE && jQuery.isPlainObject(args))
     {
         $.extend(args,{
             position: ['left','top' ]
