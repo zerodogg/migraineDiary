@@ -18,8 +18,9 @@ var questionRenderer = jClass.virtual({
         }
         this.clearCurrent();
         var renderers = {
-            time     : this.renderTime,
-            selector : this.renderSelector
+            time        : this.renderTime,
+            selector    : this.renderSelector,
+            multiSelect : this.renderMultiSelector
         };
         if(this.mode && this.mode == 'standalone')
         {
@@ -37,7 +38,7 @@ var questionRenderer = jClass.virtual({
         }
         else
         {
-            throw('Unknown or unsupported field type: '+field.type);
+            throw('renderField: Unknown or unsupported field type: '+field.type);
         }
     },
 
@@ -45,8 +46,9 @@ var questionRenderer = jClass.virtual({
     {
         var field = this.getCurrentStep();
         var getters = {
-            time     : this.getTime,
-            selector : this.getSelector
+            time        : this.getTime,
+            selector    : this.getSelector,
+            multiSelect : this.getMultiSelect
         };
         if(getters[field.type])
         {
@@ -54,7 +56,7 @@ var questionRenderer = jClass.virtual({
         }
         else
         {
-            throw('Unknown or unsupported field type: '+field.type);
+            throw('getFieldValue: Unknown or unsupported field type: '+field.type);
         }
     },
 
@@ -75,6 +77,17 @@ var questionRenderer = jClass.virtual({
             val = false;
         }
         return val;
+    },
+
+    getMultiSelect: function()
+    {
+        var values = [];
+        this.$target.find(':checked').each(function()
+        {
+            var $this = $(this);
+            values.push($this.val());
+        });
+        return values;
     },
 
     renderTime: function(data)
@@ -141,6 +154,27 @@ var questionRenderer = jClass.virtual({
         {
             self.next();
         });
+    },
+
+    renderMultiSelector: function(data)
+    {
+        var self = this;
+        this.publish('renderStep', { 'step': data });
+        $.each(data.selections, function (int,setting)
+        {
+            var id = 'selectorPrompt_'+setting.val;
+            if(self.$target.attr('id'))
+                id = id + '_'+self.$target.attr('id');
+            var html = '<input type="checkbox" name="checkbox" value="'+setting.val+'" id="'+id+'" /><label for="'+id+'">'+setting.label+'</label>';
+            self.$target.append(html);
+            self.$target.append('<br />');
+        });
+        /*
+        var self = this;
+        this.$target.find('[type=radio]').change(function()
+        {
+            self.next();
+        });*/
     },
 
     clearCurrent: function()

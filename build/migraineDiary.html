@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>Starting Migraine Diary...</title>
+		<link rel="stylesheet" href="uistyle/jquery-ui-1.8.4.custom.css" />
+		<link rel="stylesheet" href="desktop.css" />
+	</head>
+	<body>
+		<script type="text/javascript" src="libs/LAB.js"></script>
+		<script type="text/javascript">
+			$LAB.script('http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js')
+			    .wait()
+			    .script('http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js')
+				.script('libs/libs-bundle.js')
+				.script('i18n.js')
+				.wait()
+				.script('migraineDiary.js');
+		</script>
+		<noscript>
+			Migraine Diary is written in JavaScript, your browser does not appear to have JavaScript enabled.
+		</noscript>
+	</body>
+</html>

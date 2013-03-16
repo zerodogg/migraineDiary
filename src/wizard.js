@@ -61,17 +61,18 @@
  *
  *      LABEL: {
  *          type: '',              // The type of prompt it is, one of:
- *                                      // selector: radio buttons
+ *                                      // selector: radio buttons, or similar
+ *                                      // multiSelect: checkbuttons, or similar
  *                                      // time: time input
  *          isSkippable: true,     // Is this step skippable? Can be omitted, in which
  *                                 // case it defaults to true
  *          title: '',             // The title of this step
  *          information: '',       // The "informative text" for this step
  *          changeInformation: '', // The "informative text" for this step, as used when modifying an existing value
- *          prompt: '',            // The "prompt" text for this step, used fo "time" types only.
+ *          prompt: '',            // The "prompt" text for this step, used for "time" types only.
  *          setting: '',           // The setting to save this data to. Can be omitted, in which case
  *                                 // it defaults to the LABEL
- *          selections: [          // (only when type=selector)
+ *          selections: [          // (only when type=selector or multiSelect)
  *              { 
  *                  val: 'VALUE',   // The value of this selection
  *                  label: 'LABEL', // The label of this selection

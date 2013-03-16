@@ -1,26 +1,35 @@
+SHELL=/bin/bash
 GET=wget --no-verbose --no-check-certificate -O
 simpleJSi18nPath=../simpleJSi18n
+TARGET=build
 
-COREFILES=src/wizard.js src/questionRenderer.js src/wizardRenderer.js src/UI.js src/core.js
+COREFILES=src/wizard.js src/questionRenderer.js src/wizardRenderer.js src/UI.js src/steps.js src/core.js
 
-build: buildBundle buildAndroidBundle buildCSS
-	cat src/browser/*.js $(COREFILES) > migraineDiary.js
-	cat src/mobile/*.js $(COREFILES) > migraineDiary.android.js
+build: buildPrep buildBundle buildAndroidBundle buildCSS buildFinalize
+	cat src/browser/*.js $(COREFILES) > $(TARGET)/migraineDiary.js
+	cat src/mobile/*.js $(COREFILES) > $(TARGET)/migraineDiary.android.js
 buildBundle:
 	[ -e "libs/jquery.js" ] || make downloadLibs
-	cat libs/jquery.json-2.2.min.js libs/jstorage.min.js libs/jquery-hotkeys.js libs/jqsimple-class.min.js libs/jquery-pubsub.js > libs/libs-bundle.js
+	cat libs/jquery.json-2.2.min.js libs/jstorage.min.js libs/jquery-hotkeys.js libs/jqsimple-class.min.js libs/jquery-pubsub.js > $(TARGET)/libs/libs-bundle.js
 buildAndroidBundle:
 	[ -e "libs/jquery.js" ] || make downloadLibs
-	echo -n > libs/libs-bundle-android.js
+	echo -n > $(TARGET)/libs/libs-bundle-android.js
 	first=1; for f in libs/jquery.js libs/jquery-ui.js libs/jquery.json-2.2.min.js libs/jstorage.min.js libs/jquery-hotkeys.js libs/jqsimple-class.min.js libs/jquery-pubsub.js; do \
-		[ "$$first" != "1" ] && echo "" >> libs/libs-bundle-android.js; \
+		[ "$$first" != "1" ] && echo "" >> $(TARGET)/libs/libs-bundle-android.js; \
 		first=0; \
-		echo "/* $$f */" >> libs/libs-bundle-android.js; \
-		cat "$$f" >> libs/libs-bundle-android.js; \
+		echo "/* $$f */" >> $(TARGET)/libs/libs-bundle-android.js; \
+		cat "$$f" >> $(TARGET)/libs/libs-bundle-android.js; \
 	done
-buildCSS:
-	cat css/core.css css/desktop.css > desktop.css
-	cat css/core.css css/mobile.css > mobile.css
+buildCSS: buildPrep
+	cat css/core.css css/desktop.css > $(TARGET)/desktop.css
+	cat css/core.css css/mobile.css > $(TARGET)/mobile.css
+buildFinalize:
+	cp migraineDiary.html $(TARGET)/
+	cp -r uistyle i18n.js $(TARGET)/
+	cp libs/LAB.js $(TARGET)/libs/
+buildPrep:
+	rm -rf "$(TARGET)"/*
+	mkdir -p "$(TARGET)/libs"
 
 downloadLibs:
 	$(GET) libs/LAB.js https://github.com/getify/LABjs/raw/master/LAB.min.js
@@ -30,6 +39,9 @@ downloadLibs:
 	$(GET) libs/jquery.js http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js
 	$(GET) libs/jquery-pubsub.js https://raw.github.com/gist/661855/89a024203615951aa8384071e0a408283b44c6a7/jquery.ba-tinypubsub.min.js
 	[ -e libs/jquery-ui.js ] || $(GET) libs/jquery-ui.js http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js
+onchange:
+	@echo "Watching src/ for changes and rebuilding files whenever a change is detected"
+	@while :;do inotifywait -e modify -e create -e delete -e moved_to -r src &>/dev/null; echo -n "[$$(date +%H:%M:%S)] Rebuilding..."; make build &>/dev/null;echo "done";sleep 1s;done
 #fetchJQM: JQM_VERSION=1.0a3
 #fetchJQM:
 #	rm -rf uistyle-jqt

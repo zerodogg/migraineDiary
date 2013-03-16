@@ -16,18 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function mLog (message)
-{
-    if(console && console.log)
-    {
-        console.log.apply(console,arguments);
-    }
-    else
-    {
-        window.mLog = $.noop;
-    }
-}
-
 var migraineDiary =
 {
     UI: null,

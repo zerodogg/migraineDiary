@@ -1,3 +1,8 @@
+/*
+ * This class extends the questionRenderer from questionRenderer.js, which
+ * handles the rendering of question steps, as well as wizard from wizard.js
+ * which implements the back-end logic for the wizard.
+ */
 var jqWizard = jClass.extend([questionRenderer,wizard],{
     $menu: null,
 
@@ -21,21 +26,21 @@ var jqWizard = jClass.extend([questionRenderer,wizard],{
     buildMenu: function()
     {
         var self = this;
-        var prev = $('<div/>').html(_('Previous')).button().appendTo(this.$menu).click(function()
+        var previousButton = $('<div/>').html(_('Previous')).button().appendTo(this.$menu).click(function()
         {
             self.previous();
         }).attr('id','wizardPrevButton');
-        var skip = $('<div/>').html(_('Skip')).button().appendTo(this.$menu).click(function()
+        var skipButton = $('<div/>').html(_('Skip')).button().appendTo(this.$menu).click(function()
         {
             self.skip();
         }).attr('id','wizardSkipButton');
-        var cont = $('<div/>').html(_('Continue')).button().appendTo(this.$menu).click(function()
+        var continueButton = $('<div/>').html(_('Continue')).button().appendTo(this.$menu).click(function()
         {
             if(self.getCurrentStep().isSkippable === false)
             {
                 if(self.getFieldValue() == null)
                 {
-                    throw('FIXME');
+                    throw('getFieldValue returned null');
                 }
             }
             self.next();
@@ -45,27 +50,27 @@ var jqWizard = jClass.extend([questionRenderer,wizard],{
         {
             if(param.step.isSkippable === false)
             {
-                skip.hide();
+                skipButton.hide();
             }
             else
             {
-                skip.show();
+                skipButton.show();
             }
             if(param.step.type == 'selector')
             {
-                cont.hide();
+                continueButton.hide();
             }
             else
             {
-                cont.show();
+                continueButton.show();
             }
             if(param.wizard.stack.length <= 0)
             {
-                prev.hide();
+                previousButton.hide();
             }
             else
             {
-                prev.show();
+                previousButton.show();
             }
         });
     }
